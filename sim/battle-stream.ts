@@ -70,6 +70,7 @@ export class BattleStream extends Streams.ObjectReadWriteStream<string> {
 	}
 
 	_writeLine(type: string, message: string) {
+		console.log(type, message);
 		switch (type) {
 		case 'start':
 			const options = JSON.parse(message);
@@ -102,6 +103,10 @@ export class BattleStream extends Streams.ObjectReadWriteStream<string> {
 		case 'tiebreak':
 			this.battle!.tiebreak();
 			break;
+		case 'internal':
+			if (message === 'dump') {
+				console.log(this.battle);
+			}
 		}
 	}
 
@@ -120,7 +125,7 @@ export class BattleStream extends Streams.ObjectReadWriteStream<string> {
  * Splits a BattleStream into omniscient, spectator, p1, p2, p3 and p4
  * streams, for ease of consumption.
  */
-export function getPlayerStreams(stream: BattleStream) {
+export function getPlayerStreams(stream: Streams.ObjectReadWriteStream<string>) {
 	const streams = {
 		omniscient: new Streams.ObjectReadWriteStream({
 			write(data: string) {

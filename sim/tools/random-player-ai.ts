@@ -34,6 +34,7 @@ export class RandomPlayerAI extends BattlePlayer {
 	}
 
 	receiveRequest(request: AnyObject) {
+		console.log('rando req', request);
 		if (request.wait) {
 			// wait request
 			// do nothing
@@ -99,7 +100,7 @@ export class RandomPlayerAI extends BattlePlayer {
 
 				// Filter out adjacentAlly moves if we have no allies left, unless they're our
 				// only possible move options.
-				const hasAlly = !pokemon[i ^ 1].condition.endsWith(` fnt`);
+				const hasAlly = pokemon[i ^ 1] && !pokemon[i ^ 1].condition.endsWith(` fnt`);
 				const filtered = canMove.filter(m => m.target !== `adjacentAlly` || hasAlly);
 				canMove = filtered.length ? filtered : canMove;
 
@@ -170,7 +171,7 @@ export class RandomPlayerAI extends BattlePlayer {
 	}
 
 	protected chooseTeamPreview(team: AnyObject[]): string {
-		return `default`;
+		return `team 123456`;
 	}
 
 	protected chooseMove(moves: {choice: string, move: AnyObject}[]): string {
