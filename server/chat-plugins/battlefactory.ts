@@ -1,14 +1,8 @@
-/*
-* Hangman chat plugin
-* By bumbadadabum and Zarel. Art by crobat.
-*/
-
-'use strict';
 
 import {BattleFactoryRoomBattle} from './battlefactory-room-battle';
-
-//import bssSets from '../../data/mods/gen7/bss-factory-sets.json'
-const maxMistakes = 6;
+//normal ts-style `import` just sets bssSets to `undefined` for some reason
+const bssSets: Record<string, any> = require('../../data/mods/gen7/bss-factory-sets.json');
+import {Dex} from '../../sim/dex';
 
 class BattleFactory extends Rooms.RoomGame {
 	gameNumber: Number;
@@ -16,6 +10,10 @@ class BattleFactory extends Rooms.RoomGame {
 	player: User;
 	battleRoom: GameRoom | null;
 	battle: BattleFactoryRoomBattle | null;
+	newMons: PokemonSet[];
+	team: PokemonSet[];
+	oppTeam: PokemonSet[];
+	monToRemove: number | null;
 
 	constructor(room: ChatRoom | GameRoom, user: User)  {
 
@@ -26,19 +24,33 @@ class BattleFactory extends Rooms.RoomGame {
 		this.player = user;
 		this.battleRoom = null;
 		this.battle = null;
+		this.newMons = sampleMons(6);
+		this.team = [];
+		this.oppTeam = sampleMons(3, this.newMons.map(m => m.species));
+		this.monToRemove = null;
+	}
+
+	/**
+	 * For after a user has played a game and chose to play again
+	 */
+	continue() {
+		this.oppTeam = sampleMons(3, this.newMons.map(m => m.species).concat(this.team.map(m => m.species)));
+		console.log(this);
+		this.displayPickToRemove();
 	}
 
 	start() {
-		const format = 'gen71v1';
+		if (this.team.length < 3) return;
+		const format = 'sambattlefactory';
 		const roomid = Rooms.global.prepBattleRoom(format);
 		const p1 = Users.get(this.player);
-		//const p2 = Users.get("samhippie");
-		const options = {
+		this.newMons = this.oppTeam.slice();
+		console.log(this.team[0].moves);
+		const options: AnyObject = {
 			p1: p1,
-			//p2: p2,
 			format: format,
-			//p1team: '...'
-			//p2team: '...'
+			p1team: Dex.packTeam(this.team),
+			p2team: Dex.packTeam(this.oppTeam),
 		};
 		this.battleRoom = Rooms.createGameRoom(roomid, "BF Room", options);
 		this.battle = new BattleFactoryRoomBattle(this.battleRoom, format, options, (isWinner) => {
@@ -47,30 +59,107 @@ class BattleFactory extends Rooms.RoomGame {
 		this.battleRoom.game = this.battle;
 
 		p1 ? p1.joinRoom(this.battleRoom) : null;
-		//p2 ? p2.joinRoom(this.battleRoom) : null;
+	}
+
+	pickToRemove(monIndex: number | null) {
+		if (monIndex === null) {
+			this.start();
+			return;
+		}
+		this.monToRemove = monIndex;
+		this.displayPickOpponent();
+	}
+
+	pickOpponent(monIndex: number) {
+		const mon = this.newMons[monIndex]
+		if (this.team.find(m => m.species === mon.species)) return;
+		this.team[this.monToRemove!] = mon;
+		this.start();
+	}
+
+	pickInitial(monIndex: number) {
+		const mon = this.newMons[monIndex]
+		if (this.team.find(m => m.species === mon.species)) return;
+		this.team.push(mon);
+		if (this.team.length > 3) {
+			this.team.shift();
+		}
+		this.displayPickTeam();
 	}
 
 	dump() {
 		this.battle!.dump();
 	}
 
-	displayPostGame(isWinner: boolean) {
-		const output = `<p>You <strong>${isWinner ? 'Won' : 'Lost'}!</strong></p>`;
-		this.player.sendTo(this.room, `|uhtml|battlefactory${this.gameNumber}|${output}`);
+	renderTeamSummary() : string {
+		return `<p>Your current team: ${this.team.map(m => m.species).join(', ')}</p>`;
 	}
 
-	generateWindow() {
-		const output = '<button name="send" value="/bf start">Start</button>'
-
-		return output;
-	}
-
-	display(user: User, broadcast = false) {
-		if (broadcast) {
-			this.room.add(`|uhtml|battlefactory${this.gameNumber}|${this.generateWindow()}`);
-		} else {
-			user.sendTo(this.room, `|uhtml|battlefactory${this.gameNumber}|${this.generateWindow()}`);
+	renderPickTeam() : string {
+		let team = '<ul>';
+		let i = 0;
+		for(const mon of this.newMons) {
+			team += '<li><button '
+			if (this.team.find(m => m.species == mon.species)) {
+				team += 'disabled ';
+			}
+			team += `name="send" value="/bf pick ${i}">${mon.species}</button></li>`;
+			i++;
 		}
+		team += '</ul>'
+		return team;
+	}
+
+	renderStartGame() {
+		return '<button name="send" value="/bf start">Start</button>';
+	}
+
+	displayPickToRemove() {
+		let output = 'Pick a mon to remove <ul>'
+		let i = 0;
+		for (const mon of this.team) {
+			output += `<li><button name="send" value="/bf remove ${i}">Remove ${mon.species}</button></li>`
+			i++;
+		}
+		output += `<li><button name="send" value="/bf remove null">Remove nothing</button></li>`
+		output += '</ul>'
+		output += `Potential new mons: ${this.newMons.map(m => m.species).join(', ')}`
+		this.displayHtml(output);
+	}
+
+	displayPickOpponent() {
+		let output = `Pick a mon to replace ${this.team[this.monToRemove!].species} with<ul>`
+		let i = 0;
+		for (const mon of this.newMons) {
+			output += `<li><button name="send" value="/bf replace ${i}">${mon.species}</button></li>`
+			i++;
+		}
+		output += '</ul>'
+		output += `Current team: ${this.team.filter((_, i) => i != this.monToRemove).map(m => m.species).join(', ')}`
+		this.displayHtml(output);
+	}
+
+	displayPickTeam() {
+		let output = this.renderPickTeam();
+		if (this.team.length > 0) {
+			output += this.renderTeamSummary();
+		}
+		output += this.renderStartGame();
+		this.displayHtml(output);
+	}
+
+	displayPostGame(isWinner: boolean) {
+		let output = `<p>You <strong>${isWinner ? 'Won' : 'Lost'}!</strong></p>`;
+		if (isWinner) {
+			output += '<button name="send" value="/bf continue">Continue</button>'
+		} else {
+			output += '<button disabled name="send" value="/bf continue">Continue</button>'
+		}
+		this.displayHtml(output);
+	}
+
+	displayHtml(html: string) {
+		this.player.sendTo(this.room, `|uhtml|battlefactory${this.gameNumber}|${html}`);
 	}
 
 	update() {
@@ -93,21 +182,84 @@ const commands = {
 		new(target: string, room: ChatRoom | GameRoom, user: User, connection: Connection) {
 			const game = new BattleFactory(room, user);
 			room.game = game;
-			game.display(user, true);
+			game.displayPickTeam();
 			this.modlog('BATTLEFACTORY');
 			this.addModAction(`A game of battle factory was started by ${user.name}.`);
 		},
 
 		start(target: string, room: ChatRoom | GameRoom, user: User) {
 			const game = room.game as BattleFactory;
+			if (user.id != game.player.id) return;
+			const monIndices = target.split('').map(c => parseInt(c) - 1);
 			game.start();
+		},
+
+		pick(target: string, room: ChatRoom | GameRoom, user: User) {
+			const game = room.game as BattleFactory;
+			if (user.id != game.player.id) return;
+			const monIndex = parseInt(target);
+			game.pickInitial(monIndex);
+		},
+
+		continue(target: string, room: ChatRoom | GameRoom, user: User) {
+			const game = room.game as BattleFactory;
+			if (user.id != game.player.id) return;
+			game.continue();
+		},
+
+		remove(target: string, room: ChatRoom | GameRoom, user: User) {
+			const game = room.game as BattleFactory;
+			if (user.id != game.player.id) return;
+			const monIndex = target !== 'null'
+				? parseInt(target)
+				: null;
+			game.pickToRemove(monIndex);
+		},
+
+		replace(target: string, room: ChatRoom | GameRoom, user: User) {
+			const game = room.game as BattleFactory;
+			if (user.id != game.player.id) return;
+			const monIndex = parseInt(target);
+			game.pickOpponent(monIndex);
 		},
 
 		dump(target: string, room: ChatRoom | GameRoom, user: User) {
 			const game = room.game as BattleFactory;
 			game.dump();
-		}
+		},
 	},
 };
+
+const sets: PokemonSet[] = [];
+
+/**
+ *  If you ask for an impossible number of mons given the sets and blacklist, this is going to run forever
+ */ 
+function sampleMons(n: number, speciesBlacklist: string[] = []) {
+	if (sets.length === 0) {
+		const mons = Object.keys(bssSets);
+		for (const mon of mons) {
+			sets.push(...bssSets[mon].sets);
+		}
+		for (const set of sets) {
+			//each move in json is actually an array of moves
+			//we could pick one randomly, but this is easier. It also avoids doing illegal things like having the same move multiple times on the same set
+			set.moves = set.moves.map(ms => ms[0]);
+		}
+	}
+	const mons: PokemonSet[] = [];
+	while (mons.length < n) {
+		const i = Math.floor(Math.random() * sets.length);
+		const mon = sets[i];
+		if (!speciesBlacklist.includes(mon.species) && !mons.find(m => m.species === mon.species)) {
+			mons.push(mon);
+		}
+	}
+	if (Math.random() < 0.1) {
+		const i = Math.floor(Math.random() * mons.length);
+		mons[i].shiny = true;
+	}
+	return mons;
+}
 
 exports.commands = commands;

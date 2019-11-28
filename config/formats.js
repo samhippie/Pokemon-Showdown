@@ -6,6 +6,15 @@
 /**@type {(FormatsData | {section: string, column?: number})[]} */
 let Formats = [
 
+	{
+		section: "Sam's stuff 😎",
+	},
+	{
+		name: "[🔥🔥🔥]Sam Battle Factory",
+		mod: 'gen7',
+		gameType: 'doubles',
+		ruleset: ['Obtainable', 'Cancel Mod'],
+	},
 	// Sw/Sh Singles
 	///////////////////////////////////////////////////////////////////
 
