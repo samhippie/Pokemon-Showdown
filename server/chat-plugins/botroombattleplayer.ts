@@ -1,14 +1,15 @@
 import {RoomBattlePlayer} from "../room-battle";
 import {BattleFactoryRoomBattle} from "./battlefactory-room-battle";
 import {RandomPlayerAI} from '../../sim/tools/random-player-ai';
+import {TrainerPlayerAI} from '../../sim/tools/trainer-player-ai';
 import { ObjectReadWriteStream } from "../../lib/streams";
 
 export class BotRoomBattlePlayer extends RoomBattlePlayer {
-	ai: RandomPlayerAI;
+	ai: TrainerPlayerAI;
 
 	constructor(game: BattleFactoryRoomBattle) {
 		super(null, game, 2);
-		const ai = new RandomPlayerAI(null!);
+		const ai = new TrainerPlayerAI("p1", null!);
 		this.ai = ai;
 		ai.choose = (s) => this.choose(s);
 		//void this.ai.start();
