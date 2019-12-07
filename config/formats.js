@@ -14,6 +14,9 @@ let Formats = [
 		mod: 'gen7',
 		team: 'optional',
 		gameType: 'doubles',
+		challengeShow: true,
+		searchShow: true,
+		rated: false,
 		ruleset: ['Obtainable', 'Cancel Mod'],
 	},
 	// Sw/Sh Singles
@@ -22,6 +25,7 @@ let Formats = [
 	{
 		section: "Sw/Sh Singles",
 	},
+	/*
 	{
 		name: "[Gen 8] Random Battle",
 		desc: `Randomized teams of level-balanced Pok&eacute;mon with sets that are generated to be competitively viable.`,
@@ -30,6 +34,7 @@ let Formats = [
 		team: 'random',
 		ruleset: ['PotD', 'Obtainable', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod'],
 	},
+	*/
 	{
 		name: "[Gen 8] Unrated Random Battle",
 
