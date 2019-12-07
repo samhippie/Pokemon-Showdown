@@ -1202,7 +1202,10 @@ exports.commands = {
 
 	'!search': true,
 	search(target, room, user, connection) {
-		if (target) {
+		if (target === 'sambattlefactory') {
+			this.parse(`/bf new`);
+			Ladders.cancelSearches(user);
+		} else if (target) {
 			if (Config.laddermodchat) {
 				let userGroup = user.group;
 				if (Config.groupsranking.indexOf(userGroup) < Config.groupsranking.indexOf(Config.laddermodchat)) {
