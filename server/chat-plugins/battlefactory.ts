@@ -60,6 +60,8 @@ class BattleFactory extends Rooms.RoomGame {
 		this.battleRoom.game = this.battle;
 
 		p1 ? p1.joinRoom(this.battleRoom) : null;
+
+		this.displayInGame();
 	}
 
 	pickToRemove(monIndex: number | null) {
@@ -104,7 +106,7 @@ class BattleFactory extends Rooms.RoomGame {
 			if (this.team.find(m => m.species == mon.species)) {
 				team += 'disabled ';
 			}
-			team += `name="send" value="/bf pick ${i}">${mon.species}</button></li>`;
+			team += `name="send" value="/bf pick ${i}"><strong>${mon.species}</strong> (${mon.item}) <ul style="text-align: left;">${mon.moves.map(m => `<li>${m}</li>`).join('')}</ul></button></li>`;
 			i++;
 		}
 		team += '</ul>'
@@ -115,11 +117,16 @@ class BattleFactory extends Rooms.RoomGame {
 		return '<button name="send" value="/bf start">Start</button>';
 	}
 
+	displayInGame() {
+		let output = `<strong>GO GO GO GO GO ${this.player.name}</strong>`;
+		this.displayHtml(output);
+	}
+
 	displayPickToRemove() {
 		let output = 'Pick a mon to remove <ul>'
 		let i = 0;
 		for (const mon of this.team) {
-			output += `<li><button name="send" value="/bf remove ${i}">Remove ${mon.species}</button></li>`
+			output += `<li><button name="send" value="/bf remove ${i}">Remove <strong>${mon.species}</strong></button></li>`
 			i++;
 		}
 		output += `<li><button name="send" value="/bf remove null">Remove nothing</button></li>`
@@ -132,7 +139,7 @@ class BattleFactory extends Rooms.RoomGame {
 		let output = `Pick a mon to replace ${this.team[this.monToRemove!].species} with<ul>`
 		let i = 0;
 		for (const mon of this.newMons) {
-			output += `<li><button name="send" value="/bf replace ${i}">${mon.species}</button></li>`
+			output += `<li><button name="send" value="/bf replace ${i}">Pick <strong>${mon.species}</strong></button></li>`
 			i++;
 		}
 		output += '</ul>'
