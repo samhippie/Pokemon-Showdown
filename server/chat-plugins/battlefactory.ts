@@ -181,8 +181,13 @@ const commands = {
 	battlefactory: {
 		create: 'new',
 		new(target: string, room: ChatRoom | GameRoom, user: User, connection: Connection) {
-			const game = new BattleFactory(room, user);
-			room.game = game;
+			const format = 'sambattlefactory';
+			const gameRoomId = Rooms.global.prepBattleRoom(format);
+			const p1 = Users.get(user);
+			const gameRoom = Rooms.createChatRoom(gameRoomId, 'Battle Factory', { p1: p1 });
+			p1 ? p1.joinRoom(gameRoom) : null;
+			const game = new BattleFactory(gameRoom, user);
+			gameRoom.game = game;
 			game.displayPickTeam();
 			this.modlog('BATTLEFACTORY');
 			this.addModAction(`A game of battle factory was started by ${user.name}.`);
@@ -191,7 +196,7 @@ const commands = {
 		start(target: string, room: ChatRoom | GameRoom, user: User) {
 			const game = room.game as BattleFactory;
 			if (user.id != game.player.id) return;
-			const monIndices = target.split('').map(c => parseInt(c) - 1);
+			if (game.battle) return;
 			game.start();
 		},
 
