@@ -223,6 +223,14 @@ if (cluster.isMaster) {
 		worker.send(`-${roomid}\n${socketid}`);
 	};
 
+
+	let rooms = {};
+	exports.monkeyPatchChannelSocket = function(roomid, handler) {
+		let room = rooms[roomid] || [];
+		room.push(handler);
+		rooms[roomid] = room;
+	};
+
 	/**
 	 * @param {RoomID} roomid
 	 * @param {string} message
@@ -230,6 +238,12 @@ if (cluster.isMaster) {
 	exports.channelBroadcast = function (roomid, message) {
 		for (const worker of workers.values()) {
 			worker.send(`:${roomid}\n${message}`);
+		}
+		const room = rooms[roomid];
+		if (room) {
+			for (let i = 0; i < room.length; i++) {
+				room[i](extractChannel(message, 2));
+			}
 		}
 	};
 
@@ -432,29 +446,6 @@ if (cluster.isMaster) {
 	 * @type {Map<RoomID, Map<string, ChannelID>>}
 	 */
 	const roomChannels = new Map();
-
-	/**
-	 * @param {string} message
-	 * @param {-1 | ChannelID} channelid
-	 */
-	const extractChannel = (message, channelid) => {
-		if (channelid === -1) {
-			// Grab all privileged messages
-			return message.replace(/\n\|split\|p[1234]\n([^\n]*)\n(?:[^\n]*)/g, '\n$1');
-		}
-
-		// Grab privileged messages channel has access to
-		switch (channelid) {
-		case 1: message = message.replace(/\n\|split\|p1\n([^\n]*)\n(?:[^\n]*)/g, '\n$1'); break;
-		case 2: message = message.replace(/\n\|split\|p2\n([^\n]*)\n(?:[^\n]*)/g, '\n$1'); break;
-		case 3: message = message.replace(/\n\|split\|p3\n([^\n]*)\n(?:[^\n]*)/g, '\n$1'); break;
-		case 4: message = message.replace(/\n\|split\|p4\n([^\n]*)\n(?:[^\n]*)/g, '\n$1'); break;
-		}
-
-		// Discard remaining privileged messages
-		// Note: the last \n? is for privileged messages that are empty when non-privileged
-		return message.replace(/\n\|split\|(?:[^\n]*)\n(?:[^\n]*)\n\n?/g, '\n');
-	};
 
 	process.on('message', data => {
 		// console.log('worker received: ' + data);
@@ -696,3 +687,25 @@ if (cluster.isMaster) {
 	const Repl = require(/** @type {any} */('../.lib-dist/repl')).Repl;
 	Repl.start(`sockets-${cluster.worker.id}-${process.pid}`, cmd => eval(cmd));
 }
+/**
+ * @param {string} message
+ * @param {-1 | ChannelID} channelid
+ */
+function extractChannel(message, channelid) {
+	if (channelid === -1) {
+		// Grab all privileged messages
+		return message.replace(/\n\|split\|p[1234]\n([^\n]*)\n(?:[^\n]*)/g, '\n$1');
+	}
+
+	// Grab privileged messages channel has access to
+	switch (channelid) {
+	case 1: message = message.replace(/\n\|split\|p1\n([^\n]*)\n(?:[^\n]*)/g, '\n$1'); break;
+	case 2: message = message.replace(/\n\|split\|p2\n([^\n]*)\n(?:[^\n]*)/g, '\n$1'); break;
+	case 3: message = message.replace(/\n\|split\|p3\n([^\n]*)\n(?:[^\n]*)/g, '\n$1'); break;
+	case 4: message = message.replace(/\n\|split\|p4\n([^\n]*)\n(?:[^\n]*)/g, '\n$1'); break;
+	}
+
+	// Discard remaining privileged messages
+	// Note: the last \n? is for privileged messages that are empty when non-privileged
+	return message.replace(/\n\|split\|(?:[^\n]*)\n(?:[^\n]*)\n\n?/g, '\n');
+};

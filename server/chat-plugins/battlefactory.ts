@@ -3,6 +3,7 @@ import {BattleFactoryRoomBattle} from './battlefactory-room-battle';
 //normal ts-style `import` just sets bssSets to `undefined` for some reason
 const bssSets: Record<string, any> = require('../../data/mods/gen7/bss-factory-sets.json');
 import {Dex} from '../../sim/dex';
+import { User } from '../users';
 
 class BattleFactory extends Rooms.RoomGame {
 	gameNumber: Number;

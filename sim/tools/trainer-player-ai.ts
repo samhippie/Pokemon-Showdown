@@ -15,6 +15,7 @@ import { Pokemon } from '../pokemon';
 class CommandOption {
 	command: string;
 	pokemon: Template;
+	score: number;
 	//sometimes a bad but legal move is the only option
 	//e.g. choice HH into an empty slot
 	//if this is the only option, then we can use it if we have to
@@ -25,6 +26,13 @@ class CommandOption {
 		this.command = command;
 		this.pokemon = pokemon;
 		this.avoid = false;
+		this.score = 0;
+	}
+
+	//implemented differently for each type of command
+	//simple instances of CommandOption are unusual cases and shouldn't be scored
+	calcScore(battleState: BattleState) {
+		this.score = 0;
 	}
 }
 
@@ -40,17 +48,83 @@ class MoveOption extends CommandOption {
 			throw new Error("target is undefined");
 		}
 	}
+
+	calcScore(battleState: BattleState) {
+		if (this.move.category == "Status") {
+			this.score = 1;
+			return;
+		}
+		const offStat = this.move.category == "Physical"
+			? this.pokemon.baseStats.atk
+			: this.pokemon.baseStats.spa;
+		const defStat = this.move.defensiveCategory == "Physical"
+			? this.pokemon.baseStats.def
+			: this.pokemon.baseStats.spd;
+		//if an offensive move hase a base power of 0, then it's probably something weird
+		//just give it a decent base power instead
+		const basePower = this.move.basePower || 80;
+		console.log(this.move.name, 'base power', basePower)
+		console.log('off stat', offStat);
+		console.log('def stat', defStat);
+		let power = basePower * offStat / defStat;
+		console.log('power', power);
+		if (this.pokemon.types.includes(this.move.type)) {
+			power *= 1.5;
+		}
+		console.log('power after stab', power);
+		if (this.target !== 'all' && this.target !== 'self' && this.target !== null) {
+			for (const type of this.target.types) {
+				power *= typeMultiplier(this.move.type, type);
+			}
+		}
+		console.log('power after typing', power);
+		this.score = power / 100;
+	}
 }
 
 class SwitchOption extends CommandOption {
-	target: Pokemon;
+	target: Template;
 	targetIndex: number;
 
-	constructor(command: string, pokemon: Template, target: Pokemon, targetIndex: number) {
+	constructor(command: string, pokemon: Template, target: Template, targetIndex: number) {
 		super(command, pokemon);
 		this.target = target;
 		this.targetIndex = targetIndex;
 	}
+
+	private evaluateType(offTypes: string[], defTypes: string[]) : number {
+		const effectivenesses = offTypes.map(ot => {
+			let effectiveness = 1;
+			for (const dt of defTypes) {
+				effectiveness *= typeMultiplier(ot, dt);
+			}
+			return effectiveness;
+		});
+		return effectivenesses.sort()[effectivenesses.length - 1];
+	}
+
+	calcScore(battleState: BattleState) {
+		const enemies = [Place.oppA, Place.oppB].map(p => battleState.placeToSpecies(p))
+			.filter(s => !!s)
+			.map(s => Dex.data.Pokedex[Dex.getId(s)]);
+		const offEffectivenesses = enemies.map(e => this.evaluateType(this.pokemon.types, e.types));
+		const defEffectivenesses = enemies.map(e => this.evaluateType(e.types, this.pokemon.types));
+		const eff = [...offEffectivenesses,...defEffectivenesses].reduce((a, b) => a * b);
+		//make sure that an even change is somewhat below 1 so that we punish wasted turns
+		this.score = eff / 4;
+	}
+}
+
+function typeMultiplier(offType: string, defType: string) : number {
+	console.log(offType, 'hitting', defType);
+	const n = Dex.data.TypeChart[defType].damageTaken[offType];
+	switch (n) {
+		default: case 0: return 1;
+		case 1: return 2;
+		case 2: return 0.5;
+		case 3: return 0;
+	}
+
 }
 
 enum Place {
@@ -246,7 +320,7 @@ export class TrainerPlayerAI extends BattlePlayer {
 		const data = line.split('|');
 
 		//nothing good comes from shorter lines
-		if (data.length < 3 || data[1] === 'request') return;
+		if (data.length < 3 || data[1] === 'request' || data[1] === 'player') return;
 
 		this.hasReceivedUpdate = true;
 
@@ -294,30 +368,31 @@ export class TrainerPlayerAI extends BattlePlayer {
 		return Dex.data.Pokedex[speciesId];
 	}
 
-	getMoveChoices(place: Place, moveOptions: AnyObject) : MoveOption[] {
+	getMoveChoices(place: Place, options: AnyObject) : MoveOption[] {
 		const mon = this.placeToPokemonTemplate(place);
 		if (!mon) throw new Error("Invalid place");
-		const move = Dex.getMove(moveOptions.move);
+		const move = Dex.getMove(options.move);
 		let targets: Place[] = [];
-		if ([`normal`, `any`, `adjacentFoe`].includes(moveOptions.target)) {
+		if ([`normal`, `any`, `adjacentFoe`].includes(options.target)) {
 			targets = [Place.oppA, Place.oppB];
-		} else if (moveOptions.target === `adjacentAlly`) {
+		} else if (options.target === `adjacentAlly`) {
 			targets = [placeToPartner(place)];
-		} else if (moveOptions.target === `adjacentAllyOrSelf`) {
+		} else if (options.target === `adjacentAllyOrSelf`) {
 			targets = [place, placeToPartner(place)];
 		} else {
 			//¯\_(ツ)_/¯
-			return [new MoveOption(`move ${moveOptions.slot}`, mon, move, "all")];
+			return [new MoveOption(`move ${options.slot}`, mon, move, "all")];
 		}
 
 		return targets.map(p => {
 			const t = placeToTarget(p);
-			const cmd = `move ${moveOptions.slot} ${t}`;
+			const cmd = `move ${options.slot} ${t}`;
 			const target = this.placeToPokemonTemplate(p);
 			return new MoveOption(cmd, mon, move, target);
 		});//.filter((m) : m is MoveOption => m !== null);
 	}
 
+	//TODO clean up, remove old parts
 	respondToRequest() {
 		const request = this.currentRequest!;
 		console.log('battle state', this.battleState);
@@ -329,8 +404,14 @@ export class TrainerPlayerAI extends BattlePlayer {
 			// switch request
 			const pokemon = request.side.pokemon;
 			const chosen: number[] = [];
-			const choices = request.forceSwitch.map((mustSwitch: AnyObject) => {
-				if (!mustSwitch) return `pass`;
+			const choiceOptions: CommandOption[][] = request.forceSwitch.map((mustSwitch: AnyObject, index: number) : CommandOption[] => {
+				const species = pokemon[index].details.split(',')[0];
+				const mon = Dex.data.Pokedex[Dex.getId(species)];
+				if (!mon) throw new Error("Bad from mon in switch");
+
+				const PassOption = new CommandOption(`pass`, mon);
+
+				if (!mustSwitch) return [PassOption];
 
 				const canSwitch = [1, 2, 3, 4, 5, 6].filter(i => (
 					pokemon[i - 1] &&
@@ -342,11 +423,25 @@ export class TrainerPlayerAI extends BattlePlayer {
 					!pokemon[i - 1].condition.endsWith(` fnt`)
 				));
 
-				if (!canSwitch.length) return `pass`;
-				const target = this.chooseSwitch(
-					canSwitch.map(slot => ({slot, pokemon: pokemon[slot - 1]})));
-				chosen.push(target);
-				return `switch ${target}`;
+				if (!canSwitch.length) return [PassOption];
+				return canSwitch.map(t => {
+					const targetSpecies = pokemon[t - 1].details.split(',')[0];
+					const target = Dex.data.Pokedex[Dex.getId(targetSpecies)];
+					return new SwitchOption(`switch ${t}`, mon, target, t);
+				})
+			});
+
+			const choices = choiceOptions.map((cos, i) => {
+				//make sure we don't switch to the same pokemon twice
+				const validOptions = cos.filter(co => co instanceof SwitchOption && !chosen.includes(co.targetIndex));
+				if (!validOptions.length) return `pass`;
+				const choice = this.prng.sample(validOptions);
+				console.log('picked switch', choice);
+				console.log('chosen', chosen);
+				if (choice instanceof SwitchOption) {
+					chosen.push(choice.targetIndex);
+				}
+				return choice.command;
 			});
 
 			this.choose(choices.join(`, `));
@@ -396,8 +491,9 @@ export class TrainerPlayerAI extends BattlePlayer {
 
 				const idSep = pokemon[i].ident.indexOf(':')
 				const id = pokemon[i].ident.substring(idSep + 2);
-				const moveChoices = canMove.flatMap(m => {
-					const place = [Place.myA, Place.myB][i];
+				const place = [Place.myA, Place.myB][i];
+				const mon = this.placeToPokemonTemplate(place);
+				const moveOptions = canMove.flatMap(m => {
 					/*
 					let place: Place | null = null;
 					try {
@@ -423,12 +519,7 @@ export class TrainerPlayerAI extends BattlePlayer {
 					*/
 					return this.getMoveChoices(place, m);
 				});
-				const moves = (
-					moveChoices.some(mc => !mc.avoid)
-						? moveChoices.filter(mc => !mc.avoid)
-						: moveChoices
-				).map(mo => { return { choice: mo.command, move: {}} });
-				console.log('moves', moves);
+
 				//move isn't actually used by anything, but later type definitions want it
 				//it'll all get reworked eventually
 
@@ -437,6 +528,7 @@ export class TrainerPlayerAI extends BattlePlayer {
 				//or calculate a score when we generate the command and put that score next to the command
 				
 				//make sure that both pokemon aren't switching to the same slot and not both zmoving
+
 
 				const canSwitch = [1, 2, 3, 4, 5, 6].filter(j => (
 					pokemon[j - 1] &&
@@ -449,8 +541,75 @@ export class TrainerPlayerAI extends BattlePlayer {
 				));
 				const switches = active.trapped ? [] : canSwitch;
 
-				const switchCommands = canSwitch.map(s => `switch ${s}`)
 
+				const switchOptions: SwitchOption[] = canSwitch.map((t: number) : SwitchOption => {
+					const targetSpecies = pokemon[t - 1].details.split(',')[0];
+					const target = Dex.data.Pokedex[Dex.getId(targetSpecies)];
+					return new SwitchOption(`switch ${t}`, mon!, target, t);
+				});
+				
+				//here is where we can apply our rule-based scoring for each option
+				//and then sample based on the score
+
+				const options = [...switchOptions, ...moveOptions];
+				for (const o of options) {
+					o.calcScore(this.battleState);
+					//square to bias towards better options
+					o.score *= o.score;
+				}
+				const scoreSum = options.reduce((acc, o) => acc + o.score, 0);
+				const scores = options.map(o => o.score / scoreSum);
+				for (let k = 0; k < options.length; k++) {
+					const o = options[k];
+					if (o instanceof MoveOption) {
+						const t = o.target === null || o.target === 'all' || o.target === 'self'
+							? o.target
+							: o.target.species;
+						console.log(o.pokemon.species, 'using', o.move.name, 'into', t);
+					} else if (o instanceof SwitchOption) {
+						console.log('switch', o.pokemon.species, 'into', o.target.species);
+					} else {
+						console.log('do', o.command);
+					}
+					console.log('has a score of', o.score);
+				}
+				//console.log("options", options);
+				//console.log("probs", scores);
+				let roll = this.prng.next();
+				let option = options[0];
+				while (roll > 0 && options.length) {
+					option = options.shift()!;
+					const score = scores.shift()!;
+					console.log('ROLLING:', roll, '-', score);
+					roll -= score;
+				}
+				if (option instanceof SwitchOption) {
+					chosen.push(option.targetIndex);
+				}
+				return option.command;
+
+				console.log('switches')
+				for (const so of switchOptions) {
+					so.calcScore(this.battleState);
+					console.log(so.score, so.pokemon.species, so.target.species);
+				}
+				/*
+				console.log('moves')
+				for (const mo of moveOptions) {
+					mo.calcScore(this.battleState);
+					console.log(mo.score, mo.pokemon.species, mo.move.name);
+				}
+				*/
+
+				if (switchOptions.length && (!moveOptions.length || this.prng.next() > this.move)) {
+					const so = this.prng.sample(switchOptions.filter(so => !so.avoid) || switchOptions);
+					chosen.push(so.targetIndex);
+					return so.command;
+				} else if (moveOptions.length) {
+					const mo = this.prng.sample(moveOptions.filter(mo => !mo.avoid) || moveOptions);
+					return mo.command;
+				} else {
+				/*
 				if (switches.length && (!moves.length || this.prng.next() > this.move)) {
 					const target = this.chooseSwitch(
 						canSwitch.map(slot => ({slot, pokemon: pokemon[slot - 1]})));
@@ -459,25 +618,8 @@ export class TrainerPlayerAI extends BattlePlayer {
 				} else if (moves.length) {
 					const move = this.chooseMove(moves);
 					return move;
-					//FIXME I'm disabling megas and ultra bursts too
-					/*
-					if (move.endsWith(` zmove`)) {
-						canZMove = false;
-						return move;
-					} else if ((canMegaEvo || canUltraBurst) && this.prng.next() < this.mega) {
-						if (canMegaEvo) {
-							canMegaEvo = false;
-							return `${move} mega`;
-						} else {
-							canUltraBurst = false;
-							return `${move} ultra`;
-						}
-					} else {
-						return move;
-					}
-					*/
 				} else {
-					console.error(this.battleState, request, switches, moves);
+					*/
 					console.error('moves');
 					for (const mon in request.active) {
 						console.error(request.active[mon]);

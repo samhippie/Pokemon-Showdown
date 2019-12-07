@@ -1,8 +1,16 @@
-#!/bin/sh
+#!/bin/bash
 
-out="$(node build && node .sim-dist/examples/trainer-example | grep -e '|win|')"
-while [ $? ]
+node build
+i=0
+while true
 do
-    out="$(node .sim-dist/examples/trainer-example | grep -e '|win|')"
+    out="$(node .sim-dist/examples/trainer-example)"
+    if grep -e '|win|' <<< "$out" >> /dev/null
+    then
+        let i++
+        echo "$i"
+    else
+        echo "$out"
+        break
+    fi
 done
-echo "${out}"

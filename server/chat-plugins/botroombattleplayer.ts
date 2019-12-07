@@ -9,7 +9,9 @@ export class BotRoomBattlePlayer extends RoomBattlePlayer {
 
 	constructor(game: BattleFactoryRoomBattle) {
 		super(null, game, 2);
-		const ai = new TrainerPlayerAI("p1", null!);
+		const ai = new TrainerPlayerAI("p2", null!);
+		this.name = 'Roboko';
+		this.id = 'guest bot';
 		this.ai = ai;
 		ai.choose = (s) => this.choose(s);
 		//void this.ai.start();
@@ -24,6 +26,7 @@ export class BotRoomBattlePlayer extends RoomBattlePlayer {
 	}
 
 	choose(choice: string) {
+		console.log('bot choosing', choice);
 		const user = {
 			id: 'guest bot',
 		} as User;
