@@ -262,9 +262,7 @@ export class TrainerPlayerAI extends BattlePlayer {
 	}
 
 	receive(chunk: string) {
-		console.log('start chunk');
 		super.receive(chunk);
-		console.log('end chunk');
 		if (this.currentRequest && this.hasReceivedUpdate) {
 			this.respondToRequest();
 		}
@@ -278,7 +276,6 @@ export class TrainerPlayerAI extends BattlePlayer {
 	}
 	//see https://github.com/smogon/pokemon-showdown/blob/master/sim/SIM-PROTOCOL.md
 	receiveLine(line: string) {
-		console.log(this.battleState.side, 'got line', line);
 		super.receiveLine(line);
 
 		/*
@@ -395,8 +392,6 @@ export class TrainerPlayerAI extends BattlePlayer {
 	//TODO clean up, remove old parts
 	respondToRequest() {
 		const request = this.currentRequest!;
-		console.log('battle state', this.battleState);
-		console.log('rando req', request);
 		if (request.wait) {
 			// wait request
 			// do nothing
@@ -436,8 +431,6 @@ export class TrainerPlayerAI extends BattlePlayer {
 				const validOptions = cos.filter(co => co instanceof SwitchOption && !chosen.includes(co.targetIndex));
 				if (!validOptions.length) return `pass`;
 				const choice = this.prng.sample(validOptions);
-				console.log('picked switch', choice);
-				console.log('chosen', chosen);
 				if (choice instanceof SwitchOption) {
 					chosen.push(choice.targetIndex);
 				}
@@ -559,28 +552,11 @@ export class TrainerPlayerAI extends BattlePlayer {
 				}
 				const scoreSum = options.reduce((acc, o) => acc + o.score, 0);
 				const scores = options.map(o => o.score / scoreSum);
-				for (let k = 0; k < options.length; k++) {
-					const o = options[k];
-					if (o instanceof MoveOption) {
-						const t = o.target === null || o.target === 'all' || o.target === 'self'
-							? o.target
-							: o.target.species;
-						console.log(o.pokemon.species, 'using', o.move.name, 'into', t);
-					} else if (o instanceof SwitchOption) {
-						console.log('switch', o.pokemon.species, 'into', o.target.species);
-					} else {
-						console.log('do', o.command);
-					}
-					console.log('has a score of', o.score);
-				}
-				//console.log("options", options);
-				//console.log("probs", scores);
 				let roll = this.prng.next();
 				let option = options[0];
 				while (roll > 0 && options.length) {
 					option = options.shift()!;
 					const score = scores.shift()!;
-					console.log('ROLLING:', roll, '-', score);
 					roll -= score;
 				}
 				if (option instanceof SwitchOption) {
