@@ -63,21 +63,21 @@ class MoveOption extends CommandOption {
 		//if an offensive move hase a base power of 0, then it's probably something weird
 		//just give it a decent base power instead
 		const basePower = this.move.basePower || 80;
-		console.log(this.move.name, 'base power', basePower)
-		console.log('off stat', offStat);
-		console.log('def stat', defStat);
+		//console.log(this.move.name, 'base power', basePower)
+		//console.log('off stat', offStat);
+		//console.log('def stat', defStat);
 		let power = basePower * offStat / defStat;
-		console.log('power', power);
+		//console.log('power', power);
 		if (this.pokemon.types.includes(this.move.type)) {
 			power *= 1.5;
 		}
-		console.log('power after stab', power);
+		//console.log('power after stab', power);
 		if (this.target !== 'all' && this.target !== 'self' && this.target !== null) {
 			for (const type of this.target.types) {
 				power *= typeMultiplier(this.move.type, type);
 			}
 		}
-		console.log('power after typing', power);
+		//console.log('power after typing', power);
 		this.score = power / 100;
 	}
 }
@@ -116,7 +116,7 @@ class SwitchOption extends CommandOption {
 }
 
 function typeMultiplier(offType: string, defType: string) : number {
-	console.log(offType, 'hitting', defType);
+	//console.log(offType, 'hitting', defType);
 	const n = Dex.data.TypeChart[defType].damageTaken[offType];
 	switch (n) {
 		default: case 0: return 1;
@@ -211,17 +211,19 @@ class BattleState {
 		//if (id) delete this.idToSpeciesTable[id];
 	}
 
-	placeToId(place: Place) : string {
-		return this.placeToIdTable[place]!;
+	placeToId(place: Place) : string | null  {
+		return this.placeToIdTable[place] || null;
 	}
 
-	idToSpecies(id: string) : string {
-		return this.idToSpeciesTable[id]!;
+	idToSpecies(id: string) : string | null{
+		return this.idToSpeciesTable[id] || null;
 	}
 
-	placeToSpecies(place: Place) : string {
-		const id = this.placeToIdTable[place]!;
-		return this.idToSpeciesTable[id]!;
+	placeToSpecies(place: Place) : string | null {
+		const id = this.placeToIdTable[place] || null;
+		return id !== null
+			? this.idToSpeciesTable[id] || null
+			: null;
 	}
 
 	hasPlace(place: Place) : boolean {
@@ -324,7 +326,9 @@ export class TrainerPlayerAI extends BattlePlayer {
 		if (!data[2].startsWith("p1") && !data[2].startsWith("p2")) return;
 
 		const placeSep = data[2].indexOf(':');
-		const place = this.battleState.parsePlace(data[2].substring(0, placeSep));
+		const place = placeSep !== -1
+			? this.battleState.parsePlace(data[2].substring(0, placeSep))
+			: null;
 		const id = data[2].substring(placeSep + 2);//+2 for ': '
 
 		//all major actions are in the form |ACTION|POKEMON|DETAILS
@@ -332,7 +336,8 @@ export class TrainerPlayerAI extends BattlePlayer {
 		//minor actions all start with '-', so we'll just exclude them
 		//all minor actions that affect the battle state significantly
 		//should have a corresponding major action, so I think this is fine
-		if (!data[1].startsWith('-')) {
+		if (place !== null && !data[1].startsWith('-')) {
+			//console.log('updating place', {id: id, place: place, data: data});
 			this.battleState.updatePlace(id, place);
 		}
 
@@ -345,11 +350,12 @@ export class TrainerPlayerAI extends BattlePlayer {
 			//|-transform|p2a: Smeargle|p1b: Arcanine
 			const placeSep = data[3].indexOf(':');
 			const targetId = data[3].substring(placeSep + 2);
-			const species = this.battleState.idToSpecies(targetId);
+			const species = this.battleState.idToSpecies(targetId)!;
 			this.battleState.updateSpecies(id, species);
 		}
 
-		if (data[1] === 'faint') {
+		//faint should have a place so this check should be redundant
+		if (data[1] === 'faint' && place !== null) {
 			this.battleState.remove(place);
 		}
 	}
@@ -381,17 +387,26 @@ export class TrainerPlayerAI extends BattlePlayer {
 			return [new MoveOption(`move ${options.slot}`, mon, move, "all")];
 		}
 
-		return targets.map(p => {
-			const t = placeToTarget(p);
-			const cmd = `move ${options.slot} ${t}`;
-			const target = this.placeToPokemonTemplate(p);
-			return new MoveOption(cmd, mon, move, target);
-		});//.filter((m) : m is MoveOption => m !== null);
+		const moveOptions = targets
+			.filter(p => this.battleState.placeToId(p) !== null)
+			.map(p => {
+				const t = placeToTarget(p);
+				const cmd = `move ${options.slot} ${t}`;
+				const target = this.placeToPokemonTemplate(p);
+				return new MoveOption(cmd, mon, move, target);
+			});
+
+		return moveOptions.length
+			? moveOptions
+			//if a move has no valid targets, we can probably just use it anyway
+			//but it's probably not a good idea, so only do it when we have to
+			: [new MoveOption(`move ${options.slot}`, mon, move, "all")];
 	}
 
 	//TODO clean up, remove old parts
 	respondToRequest() {
 		const request = this.currentRequest!;
+		console.log(JSON.stringify(request));
 		if (request.wait) {
 			// wait request
 			// do nothing
@@ -462,19 +477,6 @@ export class TrainerPlayerAI extends BattlePlayer {
 					target: active.moves[j  - 1].target,
 					zMove: false,
 				}));
-				//FIXME for now I'm disabling zmoves
-				/*
-				if (canZMove) {
-					canMove.push(...[1, 2, 3, 4].slice(0, active.canZMove.length)
-						.filter(j => active.canZMove[j - 1])
-						.map(j => ({
-							slot: j,
-							move: active.canZMove[j - 1].move,
-							target: active.canZMove[j - 1].target,
-							zMove: true,
-						})));
-				}
-				*/
 
 				// Filter out adjacentAlly moves if we have no allies left, unless they're our
 				// only possible move options.
@@ -486,42 +488,7 @@ export class TrainerPlayerAI extends BattlePlayer {
 				const id = pokemon[i].ident.substring(idSep + 2);
 				const place = [Place.myA, Place.myB][i];
 				const mon = this.placeToPokemonTemplate(place);
-				const moveOptions = canMove.flatMap(m => {
-					/*
-					let place: Place | null = null;
-					try {
-						place = this.battleState.idToPlace(id);
-					} catch(e) {
-						//this basically only happens with Zoroark
-						//the id on the field is different than the ident in the request
-						//so we'll just use `i`, which I'm not sure if it's actually right
-						//console.error("couldn't find id", id, "trying to use i", pokemon[i], "battle state", this.battleState);
-						//console.error("other pokemon", pokemon[i^1])
-						if (i === 0) {
-							place = Place.myA;
-						} else {
-							place = Place.myB;
-						}
-					}
-					try {
-						this.getMoveOptions(place, m);
-					} catch(e) {
-						console.error(id, this.battleState, pokemon[i]);
-						throw(e);
-					}
-					*/
-					return this.getMoveChoices(place, m);
-				});
-
-				//move isn't actually used by anything, but later type definitions want it
-				//it'll all get reworked eventually
-
-				//do something similar with switches
-				//then add enough information to each command in some sort of tuple so we can judge each action separately
-				//or calculate a score when we generate the command and put that score next to the command
-				
-				//make sure that both pokemon aren't switching to the same slot and not both zmoving
-
+				const moveOptions = canMove.flatMap(m => this.getMoveChoices(place, m));
 
 				const canSwitch = [1, 2, 3, 4, 5, 6].filter(j => (
 					pokemon[j - 1] &&
@@ -535,7 +502,7 @@ export class TrainerPlayerAI extends BattlePlayer {
 				const switches = active.trapped ? [] : canSwitch;
 
 
-				const switchOptions: SwitchOption[] = canSwitch.map((t: number) : SwitchOption => {
+				const switchOptions: SwitchOption[] = switches.map((t: number) : SwitchOption => {
 					const targetSpecies = pokemon[t - 1].details.split(',')[0];
 					const target = Dex.data.Pokedex[Dex.getId(targetSpecies)];
 					return new SwitchOption(`switch ${t}`, mon!, target, t);
@@ -563,50 +530,6 @@ export class TrainerPlayerAI extends BattlePlayer {
 					chosen.push(option.targetIndex);
 				}
 				return option.command;
-
-				console.log('switches')
-				for (const so of switchOptions) {
-					so.calcScore(this.battleState);
-					console.log(so.score, so.pokemon.species, so.target.species);
-				}
-				/*
-				console.log('moves')
-				for (const mo of moveOptions) {
-					mo.calcScore(this.battleState);
-					console.log(mo.score, mo.pokemon.species, mo.move.name);
-				}
-				*/
-
-				if (switchOptions.length && (!moveOptions.length || this.prng.next() > this.move)) {
-					const so = this.prng.sample(switchOptions.filter(so => !so.avoid) || switchOptions);
-					chosen.push(so.targetIndex);
-					return so.command;
-				} else if (moveOptions.length) {
-					const mo = this.prng.sample(moveOptions.filter(mo => !mo.avoid) || moveOptions);
-					return mo.command;
-				} else {
-				/*
-				if (switches.length && (!moves.length || this.prng.next() > this.move)) {
-					const target = this.chooseSwitch(
-						canSwitch.map(slot => ({slot, pokemon: pokemon[slot - 1]})));
-					chosen.push(target);
-					return `switch ${target}`;
-				} else if (moves.length) {
-					const move = this.chooseMove(moves);
-					return move;
-				} else {
-					*/
-					console.error('moves');
-					for (const mon in request.active) {
-						console.error(request.active[mon]);
-					}
-					console.error('side');
-					for (const mon in request.side.pokemon) {
-						console.error(request.side.pokemon[mon]);
-					}
-					throw new Error(`${this.constructor.name} unable to make choice ${i}. request='${request}',` +
-						` chosen='${chosen}', (mega=${canMegaEvo}, ultra=${canUltraBurst}, zmove=${canZMove})`);
-				}
 			});
 			this.choose(choices.join(`, `));
 		} else {
