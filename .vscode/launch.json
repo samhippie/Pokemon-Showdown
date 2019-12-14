@@ -29,5 +29,12 @@
             "args": ["simulate-battle"],
             "console": "integratedTerminal"
         },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Run trainer ai test game",
+            "program": "${workspaceRoot}/.sim-dist/examples/trainer-example",
+            "console": "integratedTerminal"
+        }
     ]
 }
