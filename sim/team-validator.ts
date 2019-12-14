@@ -463,7 +463,10 @@ export class TeamValidator {
 				if (ability.name === template.abilities['H']) {
 					setSources.isHidden = true;
 
-					if (template.unreleasedHidden && ruleTable.has('-unreleased')) {
+					let unreleasedHidden = template.unreleasedHidden;
+					if (unreleasedHidden === 'Past' && minPastGen < dex.gen) unreleasedHidden = false;
+
+					if (unreleasedHidden && ruleTable.has('-unreleased')) {
 						problems.push(`${name}'s Hidden Ability is unreleased.`);
 					} else if (['entei', 'suicune', 'raikou'].includes(template.id) && minPastGen > 1) {
 						problems.push(`${name}'s Hidden Ability is only available from Virtual Console, which is not allowed in this format.`);
@@ -1051,43 +1054,55 @@ export class TeamValidator {
 		const template = dex.getTemplate(set.species);
 		const battleForme = template.battleOnly && template.species;
 
-		if (battleForme) {
-			if (template.requiredAbility && set.ability !== template.requiredAbility) {
+		if (template.requiredAbility && set.ability !== template.requiredAbility) {
+			if (battleForme) {
 				// Darmanitan-Zen, Zygarde-Complete
 				problems.push(`${template.species} transforms in-battle with ${template.requiredAbility}.`);
+			} else {
+				// In gen 8, certain formes always require the natural ability even in Hackmons.
+				problems.push(`${template.species} needs to have ${template.requiredAbility}.`);
 			}
-			if (template.requiredItems) {
-				if (template.species === 'Necrozma-Ultra') {
-					// Necrozma-Ultra transforms from one of two formes, and neither one is the base forme
-					problems.push(`Necrozma-Ultra must start the battle as Necrozma-Dawn-Wings or Necrozma-Dusk-Mane holding Ultranecrozium Z.`);
-				} else if (!template.requiredItems.includes(item.name)) {
-					// Mega or Primal
-					problems.push(`${template.species} transforms in-battle with ${Chat.toOrList(template.requiredItems)}.`);
+		}
+
+		if (template.requiredItems && !template.requiredItems.includes(item.name)) {
+			if (template.species === 'Necrozma-Ultra') {
+				// Necrozma-Ultra transforms from one of two formes, and neither one is the base forme
+				problems.push(`Necrozma-Ultra must start the battle as Necrozma-Dawn-Wings or Necrozma-Dusk-Mane holding Ultranecrozium Z.`);
+			} else if (battleForme) {
+				// Mega or Primal
+				problems.push(`${template.species} transforms in-battle with ${Chat.toOrList(template.requiredItems)}.`);
+			} else {
+				if (dex.gen <= 7 || template.requiredAbility) {
+					// Drive/Griseous Orb/Memory/Plate/Z-Crystal - Forme mismatch
+					// In gen 8, certain formes require items even in Hackmons.
+					problems.push(`${template.species} needs to hold ${Chat.toOrList(template.requiredItems)}.`);
+				} else {
+					if (set.ability === template.abilities[0] && template.baseSpecies !== 'Genesect') {
+						// Arceus/Silvally in gen 8 require the item only with their natural ability.
+						problems.push(`${template.species} needs to hold ${Chat.toOrList(template.requiredItems)}.`);
+					}
 				}
 			}
-			if (template.requiredMove && !set.moves.includes(toID(template.requiredMove))) {
-				// Meloetta-Pirouette, Rayquaza-Mega
-				problems.push(`${template.species} transforms in-battle with ${template.requiredMove}.`);
-			}
-			if (!template.isGigantamax) set.species = template.baseSpecies; // Fix battle-only forme
-		} else {
-			if (template.requiredAbility) {
-				// Impossible!
-				throw new Error(`Species ${template.name} has a required ability despite not being a battle-only forme; it should just be in its abilities table.`);
-			}
-			if (template.requiredItems && !template.requiredItems.includes(item.name)) {
-				// Memory/Drive/Griseous Orb/Plate/Z-Crystal - Forme mismatch
-				problems.push(`${name} needs to hold ${Chat.toOrList(template.requiredItems)}.`);
-			}
-			if (template.requiredMove && !set.moves.includes(toID(template.requiredMove))) {
-				// Keldeo-Resolute
-				problems.push(`${name} needs to have the move ${template.requiredMove}.`);
-			}
+		}
 
-			// Mismatches between the set forme (if not base) and the item signature forme will have been rejected already.
-			// It only remains to assign the right forme to a set with the base species (Arceus/Genesect/Giratina/Silvally).
-			if (item.forcedForme && template.species === dex.getTemplate(item.forcedForme).baseSpecies) {
+		if (template.requiredMove && !set.moves.includes(toID(template.requiredMove))) {
+			// Meloetta-Pirouette, Rayquaza-Mega
+			problems.push(`${template.species} transforms in-battle with ${template.requiredMove}.`);
+		}
+
+		// Fix battle-only forme
+		if (battleForme && !template.isGigantamax) set.species = template.baseSpecies;
+
+		if (item.forcedForme) {
+			const forcedForme = dex.getTemplate(item.forcedForme);
+			if (template.species === forcedForme.baseSpecies) {
+				// Mismatches between the set forme (if not base) and the item signature forme will have been rejected already.
+				// It only remains to assign the right forme to a set with the base species (Arceus/Genesect/Giratina/Silvally/Zacian/Zamazenta).
 				set.species = item.forcedForme;
+			}
+			if (dex.gen >= 8 && forcedForme.requiredAbility) {
+				// In gen 8, certain formes always require the natural ability.
+				set.ability = forcedForme.requiredAbility;
 			}
 		}
 
@@ -1101,6 +1116,16 @@ export class TeamValidator {
 					set.species = cosplay[moveid];
 					break;
 				}
+			}
+		}
+
+		const crowned: {[k: string]: string} = {
+			'Zacian-Crowned': 'behemothblade', 'Zamazenta-Crowned': 'behemothbash',
+		};
+		if (set.species in crowned) {
+			const ironHead = set.moves.indexOf('ironhead');
+			if (ironHead >= 0) {
+				set.moves[ironHead] = crowned[set.species];
 			}
 		}
 		return problems;
@@ -1204,11 +1229,16 @@ export class TeamValidator {
 			}
 			if (banReason === '') return null;
 		} else if (tierTemplate.isUnreleased) {
-			banReason = ruleTable.check('unreleased', setHas);
-			if (banReason) {
-				return `${tierTemplate.species} is unreleased.`;
+			let isUnreleased: boolean | 'Past' = tierTemplate.isUnreleased;
+			if (isUnreleased === 'Past' && (this.format.minSourceGen || 0) < dex.gen) isUnreleased = false;
+
+			if (isUnreleased) {
+				banReason = ruleTable.check('unreleased', setHas);
+				if (banReason) {
+					return `${tierTemplate.species} is unreleased.`;
+				}
+				if (banReason === '') return null;
 			}
-			if (banReason === '') return null;
 		}
 
 		return null;
@@ -1367,7 +1397,7 @@ export class TeamValidator {
 				problems.push(`${name}'s gender must be ${eventData.gender}${etc}.`);
 			}
 		}
-		let canMint = dex.gen > 7;
+		const canMint = dex.gen > 7;
 		if (eventData.nature && eventData.nature !== set.nature && !canMint) {
 			if (fastReturn) return true;
 			problems.push(`${name} must have a ${eventData.nature} nature${etc} - Mints are only available starting gen 8.`);
@@ -1690,7 +1720,7 @@ export class TeamValidator {
 
 					if (learned.charAt(1) === 'L') {
 						// special checking for level-up moves
-						if (level >= parseInt(learned.substr(2), 10) || learnedGen >= 7) {
+						if (level >= parseInt(learned.substr(2), 10) || learnedGen === 7) {
 							// we're past the required level to learn it
 							// (gen 7 level-up moves can be relearnered at any level)
 							// falls through to LMT check below
@@ -1830,9 +1860,9 @@ export class TeamValidator {
 			template = this.dex.getTemplate(template.prevo);
 			if (template.gen > Math.max(2, this.dex.gen)) return null;
 			return template;
-		} else if (template.baseSpecies !== template.species && (['Rotom', 'Necrozma'].includes(template.baseSpecies) || template.forme === 'Gmax')) {
-			// only Rotom and Necrozma inherit learnsets from base
-			return this.dex.getTemplate(template.baseSpecies);
+		} else if (template.inheritsFrom) {
+			// For Pokemon like Rotom, Necrozma, and Gmax formes whose movesets are extensions are their base formes
+			return this.dex.getTemplate(Array.isArray(template.inheritsFrom) ? template.inheritsFrom[0] : template.inheritsFrom);
 		}
 		return null;
 	}

@@ -8,6 +8,7 @@ let BattleItems = {
 		spritenum: 575,
 		megaStone: "Abomasnow-Mega",
 		megaEvolves: "Abomasnow",
+		itemUser: ["Abomasnow"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -23,6 +24,7 @@ let BattleItems = {
 		spritenum: 576,
 		megaStone: "Absol-Mega",
 		megaEvolves: "Absol",
+		itemUser: ["Absol"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -61,6 +63,7 @@ let BattleItems = {
 				return this.chainModify([0x1333, 0x1000]);
 			}
 		},
+		itemUser: ["Dialga"],
 		num: 135,
 		gen: 4,
 		desc: "If held by a Dialga, its Steel- and Dragon-type attacks have 1.2x power.",
@@ -87,6 +90,7 @@ let BattleItems = {
 		spritenum: 577,
 		megaStone: "Aerodactyl-Mega",
 		megaEvolves: "Aerodactyl",
+		itemUser: ["Aerodactyl"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -102,6 +106,7 @@ let BattleItems = {
 		spritenum: 578,
 		megaStone: "Aggron-Mega",
 		megaEvolves: "Aggron",
+		itemUser: ["Aggron"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -179,6 +184,7 @@ let BattleItems = {
 		spritenum: 579,
 		megaStone: "Alakazam-Mega",
 		megaEvolves: "Alakazam",
+		itemUser: ["Alakazam"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -195,7 +201,7 @@ let BattleItems = {
 		onTakeItem: false,
 		zMove: "Stoked Sparksurfer",
 		zMoveFrom: "Thunderbolt",
-		zMoveUser: ["Raichu-Alola"],
+		itemUser: ["Raichu-Alola"],
 		num: 803,
 		gen: 7,
 		isNonstandard: "Past",
@@ -207,6 +213,7 @@ let BattleItems = {
 		spritenum: 615,
 		megaStone: "Altaria-Mega",
 		megaEvolves: "Altaria",
+		itemUser: ["Altaria"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -222,6 +229,7 @@ let BattleItems = {
 		spritenum: 580,
 		megaStone: "Ampharos-Mega",
 		megaEvolves: "Ampharos",
+		itemUser: ["Ampharos"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -314,6 +322,7 @@ let BattleItems = {
 		spritenum: 617,
 		megaStone: "Audino-Mega",
 		megaEvolves: "Audino",
+		itemUser: ["Audino"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -352,6 +361,7 @@ let BattleItems = {
 		spritenum: 582,
 		megaStone: "Banette-Mega",
 		megaEvolves: "Banette",
+		itemUser: ["Banette"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -376,6 +386,7 @@ let BattleItems = {
 		spritenum: 628,
 		megaStone: "Beedrill-Mega",
 		megaEvolves: "Beedrill",
+		itemUser: ["Beedrill"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -489,17 +500,17 @@ let BattleItems = {
 		onResidual(pokemon) {
 			if (this.field.isTerrain('grassyterrain')) return;
 			if (pokemon.hasType('Poison')) {
-				this.heal(pokemon.maxhp / 16);
+				this.heal(pokemon.baseMaxhp / 16);
 			} else {
-				this.damage(pokemon.maxhp / 8);
+				this.damage(pokemon.baseMaxhp / 8);
 			}
 		},
 		onTerrain(pokemon) {
 			if (!this.field.isTerrain('grassyterrain')) return;
 			if (pokemon.hasType('Poison')) {
-				this.heal(pokemon.maxhp / 16);
+				this.heal(pokemon.baseMaxhp / 16);
 			} else {
-				this.damage(pokemon.maxhp / 8);
+				this.damage(pokemon.baseMaxhp / 8);
 			}
 		},
 		num: 281,
@@ -529,6 +540,7 @@ let BattleItems = {
 		spritenum: 583,
 		megaStone: "Blastoise-Mega",
 		megaEvolves: "Blastoise",
+		itemUser: ["Blastoise"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -544,6 +556,7 @@ let BattleItems = {
 		spritenum: 584,
 		megaStone: "Blaziken-Mega",
 		megaEvolves: "Blaziken",
+		itemUser: ["Blaziken"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -569,6 +582,7 @@ let BattleItems = {
 			if (source.baseTemplate.baseSpecies === 'Kyogre') return false;
 			return true;
 		},
+		itemUser: ["Kyogre"],
 		num: 535,
 		gen: 6,
 		isNonstandard: "Past",
@@ -658,6 +672,7 @@ let BattleItems = {
 			return true;
 		},
 		forcedForme: "Silvally-Bug",
+		itemUser: ["Silvally-Bug"],
 		num: 909,
 		gen: 7,
 		desc: "Holder's Multi-Attack is Bug type.",
@@ -688,6 +703,7 @@ let BattleItems = {
 		},
 		onDrive: 'Fire',
 		forcedForme: "Genesect-Burn",
+		itemUser: ["Genesect-Burn"],
 		num: 118,
 		gen: 5,
 		desc: "Holder's Techno Blast is Fire type.",
@@ -698,6 +714,7 @@ let BattleItems = {
 		spritenum: 625,
 		megaStone: "Camerupt-Mega",
 		megaEvolves: "Camerupt",
+		itemUser: ["Camerupt"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -746,6 +763,7 @@ let BattleItems = {
 		spritenum: 585,
 		megaStone: "Charizard-Mega-X",
 		megaEvolves: "Charizard",
+		itemUser: ["Charizard"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -761,6 +779,7 @@ let BattleItems = {
 		spritenum: 586,
 		megaStone: "Charizard-Mega-Y",
 		megaEvolves: "Charizard",
+		itemUser: ["Charizard"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -883,6 +902,7 @@ let BattleItems = {
 		},
 		onDrive: 'Ice',
 		forcedForme: "Genesect-Chill",
+		itemUser: ["Genesect-Chill"],
 		num: 119,
 		gen: 5,
 		desc: "Holder's Techno Blast is Ice type.",
@@ -1108,21 +1128,27 @@ let BattleItems = {
 		name: "Custap Berry",
 		spritenum: 86,
 		isBerry: true,
+		isUnreleased: true,
 		naturalGift: {
 			basePower: 100,
 			type: "Ghost",
 		},
-		onModifyPriorityPriority: -1,
-		onModifyPriority(priority, pokemon) {
+		onBeforeTurn(pokemon) {
 			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hasAbility('gluttony'))) {
-				if (pokemon.eatItem()) {
-					this.add('-activate', pokemon, 'item: Custap Berry', '[consumed]');
-					pokemon.removeVolatile('custapberry');
-					return Math.round(priority) + 0.1;
-				}
+				pokemon.eatItem();
 			}
 		},
-		onEat() { },
+		onEat(pokemon) {
+			this.add('-activate', pokemon, 'item: Custap Berry', '[consumed]');
+			pokemon.addVolatile('custapberry');
+		},
+		effect: {
+			onModifyPriorityPriority: -1,
+			onModifyPriority(priority, pokemon) {
+				return Math.round(priority) + 0.1;
+			},
+			duration: 1,
+		},
 		num: 210,
 		gen: 4,
 		desc: "Holder moves first in its priority bracket when at 1/4 max HP or less. Single use.",
@@ -1169,6 +1195,7 @@ let BattleItems = {
 			return true;
 		},
 		forcedForme: "Silvally-Dark",
+		itemUser: ["Silvally-Dark"],
 		num: 919,
 		gen: 7,
 		desc: "Holder's Multi-Attack is Dark type.",
@@ -1206,7 +1233,7 @@ let BattleItems = {
 		onTakeItem: false,
 		zMove: "Sinister Arrow Raid",
 		zMoveFrom: "Spirit Shackle",
-		zMoveUser: ["Decidueye"],
+		itemUser: ["Decidueye"],
 		num: 798,
 		gen: 7,
 		isNonstandard: "Past",
@@ -1225,6 +1252,7 @@ let BattleItems = {
 				return this.chainModify(2);
 			}
 		},
+		itemUser: ["Clamperl"],
 		num: 227,
 		gen: 3,
 		desc: "If held by a Clamperl, its Sp. Def is doubled. Evolves Clamperl into Gorebyss when traded.",
@@ -1243,6 +1271,7 @@ let BattleItems = {
 				return this.chainModify(2);
 			}
 		},
+		itemUser: ["Clamperl"],
 		num: 226,
 		gen: 3,
 		desc: "If held by a Clamperl, its Sp. Atk is doubled. Evolves Clamperl into Huntail when traded.",
@@ -1271,6 +1300,7 @@ let BattleItems = {
 		spritenum: 624,
 		megaStone: "Diancie-Mega",
 		megaEvolves: "Diancie",
+		itemUser: ["Diancie"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -1312,6 +1342,7 @@ let BattleItems = {
 		},
 		onDrive: 'Water',
 		forcedForme: "Genesect-Douse",
+		itemUser: ["Genesect-Douse"],
 		num: 116,
 		gen: 5,
 		desc: "Holder's Techno Blast is Water type.",
@@ -1386,6 +1417,7 @@ let BattleItems = {
 			return true;
 		},
 		forcedForme: "Silvally-Dragon",
+		itemUser: ["Silvally-Dragon"],
 		num: 918,
 		gen: 7,
 		desc: "Holder's Multi-Attack is Dragon type.",
@@ -1522,7 +1554,7 @@ let BattleItems = {
 		onTakeItem: false,
 		zMove: "Extreme Evoboost",
 		zMoveFrom: "Last Resort",
-		zMoveUser: ["Eevee"],
+		itemUser: ["Eevee"],
 		num: 805,
 		gen: 7,
 		isNonstandard: "Past",
@@ -1623,6 +1655,7 @@ let BattleItems = {
 			return true;
 		},
 		forcedForme: "Silvally-Electric",
+		itemUser: ["Silvally-Electric"],
 		num: 915,
 		gen: 7,
 		desc: "Holder's Multi-Attack is Electric type.",
@@ -1686,7 +1719,7 @@ let BattleItems = {
 		onHit(target, source, move) {
 			if (move && target.getMoveHitData(move).typeMod > 0) {
 				if (target.eatItem()) {
-					this.heal(target.maxhp / 4);
+					this.heal(target.baseMaxhp / 4);
 				}
 			}
 		},
@@ -1782,6 +1815,7 @@ let BattleItems = {
 			return true;
 		},
 		forcedForme: "Silvally-Fairy",
+		itemUser: ["Silvally-Fairy"],
 		num: 920,
 		gen: 7,
 		desc: "Holder's Multi-Attack is Fairy type.",
@@ -1826,6 +1860,7 @@ let BattleItems = {
 			return true;
 		},
 		forcedForme: "Silvally-Fighting",
+		itemUser: ["Silvally-Fighting"],
 		num: 904,
 		gen: 7,
 		desc: "Holder's Multi-Attack is Fighting type.",
@@ -1902,6 +1937,7 @@ let BattleItems = {
 			return true;
 		},
 		forcedForme: "Silvally-Fire",
+		itemUser: ["Silvally-Fire"],
 		num: 912,
 		gen: 7,
 		desc: "Holder's Multi-Attack is Fire type.",
@@ -2049,6 +2085,7 @@ let BattleItems = {
 			return true;
 		},
 		forcedForme: "Silvally-Flying",
+		itemUser: ["Silvally-Flying"],
 		num: 905,
 		gen: 7,
 		desc: "Holder's Multi-Attack is Flying type.",
@@ -2179,6 +2216,7 @@ let BattleItems = {
 		spritenum: 616,
 		megaStone: "Gallade-Mega",
 		megaEvolves: "Gallade",
+		itemUser: ["Gallade"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -2215,6 +2253,7 @@ let BattleItems = {
 		spritenum: 589,
 		megaStone: "Garchomp-Mega",
 		megaEvolves: "Garchomp",
+		itemUser: ["Garchomp"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -2230,6 +2269,7 @@ let BattleItems = {
 		spritenum: 587,
 		megaStone: "Gardevoir-Mega",
 		megaEvolves: "Gardevoir",
+		itemUser: ["Gardevoir"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -2245,6 +2285,7 @@ let BattleItems = {
 		spritenum: 588,
 		megaStone: "Gengar-Mega",
 		megaEvolves: "Gengar",
+		itemUser: ["Gengar"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -2285,6 +2326,7 @@ let BattleItems = {
 			return true;
 		},
 		forcedForme: "Silvally-Ghost",
+		itemUser: ["Silvally-Ghost"],
 		num: 910,
 		gen: 7,
 		desc: "Holder's Multi-Attack is Ghost type.",
@@ -2309,6 +2351,7 @@ let BattleItems = {
 		spritenum: 623,
 		megaStone: "Glalie-Mega",
 		megaEvolves: "Glalie",
+		itemUser: ["Glalie"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -2360,6 +2403,7 @@ let BattleItems = {
 			return true;
 		},
 		forcedForme: "Silvally-Grass",
+		itemUser: ["Silvally-Grass"],
 		num: 914,
 		gen: 7,
 		desc: "Holder's Multi-Attack is Grass type.",
@@ -2455,6 +2499,7 @@ let BattleItems = {
 			return true;
 		},
 		forcedForme: "Giratina-Origin",
+		itemUser: ["Giratina-Origin"],
 		num: 112,
 		gen: 4,
 		desc: "If held by a Giratina, its Ghost- and Dragon-type attacks have 1.2x power.",
@@ -2490,6 +2535,7 @@ let BattleItems = {
 			return true;
 		},
 		forcedForme: "Silvally-Ground",
+		itemUser: ["Silvally-Ground"],
 		num: 907,
 		gen: 7,
 		desc: "Holder's Multi-Attack is Ground type.",
@@ -2514,6 +2560,7 @@ let BattleItems = {
 		spritenum: 589,
 		megaStone: "Gyarados-Mega",
 		megaEvolves: "Gyarados",
+		itemUser: ["Gyarados"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -2621,6 +2668,7 @@ let BattleItems = {
 		spritenum: 590,
 		megaStone: "Heracross-Mega",
 		megaEvolves: "Heracross",
+		itemUser: ["Heracross"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -2650,6 +2698,7 @@ let BattleItems = {
 		spritenum: 591,
 		megaStone: "Houndoom-Mega",
 		megaEvolves: "Houndoom",
+		itemUser: ["Houndoom"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -2717,6 +2766,7 @@ let BattleItems = {
 			return true;
 		},
 		forcedForme: "Silvally-Ice",
+		itemUser: ["Silvally-Ice"],
 		num: 917,
 		gen: 7,
 		desc: "Holder's Multi-Attack is Ice type.",
@@ -2730,7 +2780,7 @@ let BattleItems = {
 		},
 		num: 849,
 		gen: 7,
-		desc: "Evolves Alolan Sandshrew into Alolan Sandslash, Alolan Vulpix into Alolan Ninetales, and Eevee into Glaceon when used.",
+		desc: "Evolves Alolan Sandshrew into Alolan Sandslash, Alolan Vulpix into Alolan Ninetales, Eevee into Glaceon, and Galarian Darumaka into Galarian Darmanitan when used.",
 		shortDesc: "Evolves certain species of Pokemon when used.",
 	},
 	"icicleplate": {
@@ -2787,7 +2837,7 @@ let BattleItems = {
 		onTakeItem: false,
 		zMove: "Malicious Moonsault",
 		zMoveFrom: "Darkest Lariat",
-		zMoveUser: ["Incineroar"],
+		itemUser: ["Incineroar"],
 		num: 799,
 		gen: 7,
 		isNonstandard: "Past",
@@ -2862,6 +2912,7 @@ let BattleItems = {
 		name: "Jaboca Berry",
 		spritenum: 230,
 		isBerry: true,
+		isUnreleased: true,
 		naturalGift: {
 			basePower: 100,
 			type: "Dragon",
@@ -2869,7 +2920,7 @@ let BattleItems = {
 		onAfterDamage(damage, target, source, move) {
 			if (source && source.hp && source !== target && move && move.category === 'Physical') {
 				if (target.eatItem()) {
-					this.damage(source.maxhp / 8, source, target);
+					this.damage(source.baseMaxhp / 8, source, target);
 				}
 			}
 		},
@@ -2976,6 +3027,7 @@ let BattleItems = {
 		spritenum: 592,
 		megaStone: "Kangaskhan-Mega",
 		megaEvolves: "Kangaskhan",
+		itemUser: ["Kangaskhan"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -3018,7 +3070,7 @@ let BattleItems = {
 		onTakeItem: false,
 		zMove: "Clangorous Soulblaze",
 		zMoveFrom: "Clanging Scales",
-		zMoveUser: ["Kommo-o", "Kommo-o-Totem"],
+		itemUser: ["Kommo-o", "Kommo-o-Totem"],
 		num: 926,
 		gen: 7,
 		isNonstandard: "Past",
@@ -3065,6 +3117,7 @@ let BattleItems = {
 		spritenum: 629,
 		megaStone: "Latias-Mega",
 		megaEvolves: "Latias",
+		itemUser: ["Latias"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -3080,6 +3133,7 @@ let BattleItems = {
 		spritenum: 630,
 		megaStone: "Latios-Mega",
 		megaEvolves: "Latios",
+		itemUser: ["Latios"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -3129,6 +3183,7 @@ let BattleItems = {
 				return critRatio + 2;
 			}
 		},
+		itemUser: ["Farfetch'd", "Sirfetch'd"],
 		num: 259,
 		gen: 8,
 		desc: "If held by a Farfetch'd or Sirfetch'd, its critical hit ratio is raised by 2 stages.",
@@ -3144,11 +3199,11 @@ let BattleItems = {
 		onResidualSubOrder: 2,
 		onResidual(pokemon) {
 			if (this.field.isTerrain('grassyterrain')) return;
-			this.heal(pokemon.maxhp / 16);
+			this.heal(pokemon.baseMaxhp / 16);
 		},
 		onTerrain(pokemon) {
 			if (!this.field.isTerrain('grassyterrain')) return;
-			this.heal(pokemon.maxhp / 16);
+			this.heal(pokemon.baseMaxhp / 16);
 		},
 		num: 234,
 		gen: 2,
@@ -3223,7 +3278,7 @@ let BattleItems = {
 		},
 		onAfterMoveSecondarySelf(source, target, move) {
 			if (source && source !== target && move && move.category !== 'Status') {
-				this.damage(source.maxhp / 10, source, source, this.dex.getItem('lifeorb'));
+				this.damage(source.baseMaxhp / 10, source, source, this.dex.getItem('lifeorb'));
 			}
 		},
 		num: 270,
@@ -3250,6 +3305,7 @@ let BattleItems = {
 				return this.chainModify(2);
 			}
 		},
+		itemUser: ["Pikachu"],
 		num: 236,
 		gen: 2,
 		desc: "If held by a Pikachu, its Attack and Sp. Atk are doubled.",
@@ -3272,6 +3328,7 @@ let BattleItems = {
 		spritenum: 626,
 		megaStone: "Lopunny-Mega",
 		megaEvolves: "Lopunny",
+		itemUser: ["Lopunny"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -3307,6 +3364,7 @@ let BattleItems = {
 		spritenum: 594,
 		megaStone: "Lucario-Mega",
 		megaEvolves: "Lucario",
+		itemUser: ["Lucario"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -3328,6 +3386,7 @@ let BattleItems = {
 				return critRatio + 2;
 			}
 		},
+		itemUser: ["Chansey"],
 		num: 256,
 		gen: 2,
 		desc: "If held by a Chansey, its critical hit ratio is raised by 2 stages.",
@@ -3377,7 +3436,7 @@ let BattleItems = {
 		onTakeItem: false,
 		zMove: "Menacing Moonraze Maelstrom",
 		zMoveFrom: "Moongeist Beam",
-		zMoveUser: ["Lunala", "Necrozma-Dawn-Wings"],
+		itemUser: ["Lunala", "Necrozma-Dawn-Wings"],
 		num: 922,
 		gen: 7,
 		isNonstandard: "Past",
@@ -3405,6 +3464,7 @@ let BattleItems = {
 				return this.chainModify([0x1333, 0x1000]);
 			}
 		},
+		itemUser: ["Palkia"],
 		num: 136,
 		gen: 4,
 		desc: "If held by a Palkia, its Water- and Dragon-type attacks have 1.2x power.",
@@ -3425,7 +3485,7 @@ let BattleItems = {
 		onTakeItem: false,
 		zMove: "Splintered Stormshards",
 		zMoveFrom: "Stone Edge",
-		zMoveUser: ["Lycanroc", "Lycanroc-Midnight", "Lycanroc-Dusk"],
+		itemUser: ["Lycanroc", "Lycanroc-Midnight", "Lycanroc-Dusk"],
 		num: 925,
 		gen: 7,
 		isNonstandard: "Past",
@@ -3536,6 +3596,7 @@ let BattleItems = {
 		spritenum: 596,
 		megaStone: "Manectric-Mega",
 		megaEvolves: "Manectric",
+		itemUser: ["Manectric"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -3573,7 +3634,7 @@ let BattleItems = {
 		onTakeItem: false,
 		zMove: "Soul-Stealing 7-Star Strike",
 		zMoveFrom: "Spectral Thief",
-		zMoveUser: ["Marshadow"],
+		itemUser: ["Marshadow"],
 		num: 802,
 		gen: 7,
 		isNonstandard: "Past",
@@ -3594,6 +3655,7 @@ let BattleItems = {
 		spritenum: 598,
 		megaStone: "Mawile-Mega",
 		megaEvolves: "Mawile",
+		itemUser: ["Mawile"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -3631,6 +3693,7 @@ let BattleItems = {
 		spritenum: 599,
 		megaStone: "Medicham-Mega",
 		megaEvolves: "Medicham",
+		itemUser: ["Medicham"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -3686,6 +3749,7 @@ let BattleItems = {
 		spritenum: 618,
 		megaStone: "Metagross-Mega",
 		megaEvolves: "Metagross",
+		itemUser: ["Metagross"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -3726,6 +3790,7 @@ let BattleItems = {
 				return this.chainModify(2);
 			}
 		},
+		itemUser: ["Ditto"],
 		num: 257,
 		gen: 2,
 		desc: "If held by a Ditto that hasn't Transformed, its Defense is doubled.",
@@ -3775,7 +3840,7 @@ let BattleItems = {
 		onTakeItem: false,
 		zMove: "Genesis Supernova",
 		zMoveFrom: "Psychic",
-		zMoveUser: ["Mew"],
+		itemUser: ["Mew"],
 		num: 806,
 		gen: 7,
 		isNonstandard: "Past",
@@ -3787,6 +3852,7 @@ let BattleItems = {
 		spritenum: 600,
 		megaStone: "Mewtwo-Mega-X",
 		megaEvolves: "Mewtwo",
+		itemUser: ["Mewtwo"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -3802,6 +3868,7 @@ let BattleItems = {
 		spritenum: 601,
 		megaStone: "Mewtwo-Mega-Y",
 		megaEvolves: "Mewtwo",
+		itemUser: ["Mewtwo"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -3816,6 +3883,7 @@ let BattleItems = {
 		name: "Micle Berry",
 		spritenum: 290,
 		isBerry: true,
+		isUnreleased: true,
 		naturalGift: {
 			basePower: 100,
 			type: "Rock",
@@ -3849,7 +3917,7 @@ let BattleItems = {
 		onTakeItem: false,
 		zMove: "Let's Snuggle Forever",
 		zMoveFrom: "Play Rough",
-		zMoveUser: ["Mimikyu", "Mimikyu-Busted", "Mimikyu-Totem", "Mimikyu-Busted-Totem"],
+		itemUser: ["Mimikyu", "Mimikyu-Busted", "Mimikyu-Totem", "Mimikyu-Busted-Totem"],
 		num: 924,
 		isNonstandard: "Past",
 		gen: 7,
@@ -4293,6 +4361,7 @@ let BattleItems = {
 		spritenum: 622,
 		megaStone: "Pidgeot-Mega",
 		megaEvolves: "Pidgeot",
+		itemUser: ["Pidgeot"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -4309,7 +4378,7 @@ let BattleItems = {
 		onTakeItem: false,
 		zMove: "Catastropika",
 		zMoveFrom: "Volt Tackle",
-		zMoveUser: ["Pikachu"],
+		itemUser: ["Pikachu"],
 		num: 794,
 		gen: 7,
 		isNonstandard: "Past",
@@ -4322,7 +4391,7 @@ let BattleItems = {
 		onTakeItem: false,
 		zMove: "10,000,000 Volt Thunderbolt",
 		zMoveFrom: "Thunderbolt",
-		zMoveUser: ["Pikachu-Original", "Pikachu-Hoenn", "Pikachu-Sinnoh", "Pikachu-Unova", "Pikachu-Kalos", "Pikachu-Alola", "Pikachu-Partner"],
+		itemUser: ["Pikachu-Original", "Pikachu-Hoenn", "Pikachu-Sinnoh", "Pikachu-Unova", "Pikachu-Kalos", "Pikachu-Alola", "Pikachu-Partner"],
 		num: 836,
 		isNonstandard: "Past",
 		gen: 7,
@@ -4348,6 +4417,7 @@ let BattleItems = {
 		spritenum: 602,
 		megaStone: "Pinsir-Mega",
 		megaEvolves: "Pinsir",
+		itemUser: ["Pinsir"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -4439,6 +4509,7 @@ let BattleItems = {
 			return true;
 		},
 		forcedForme: "Silvally-Poison",
+		itemUser: ["Silvally-Poison"],
 		num: 906,
 		gen: 7,
 		desc: "Holder's Multi-Attack is Poison type.",
@@ -4605,7 +4676,7 @@ let BattleItems = {
 		onTakeItem: false,
 		zMove: "Oceanic Operetta",
 		zMoveFrom: "Sparkling Aria",
-		zMoveUser: ["Primarina"],
+		itemUser: ["Primarina"],
 		num: 800,
 		gen: 7,
 		isNonstandard: "Past",
@@ -4711,6 +4782,7 @@ let BattleItems = {
 			return true;
 		},
 		forcedForme: "Silvally-Psychic",
+		itemUser: ["Silvally-Psychic"],
 		num: 916,
 		gen: 7,
 		desc: "Holder's Multi-Attack is Psychic type.",
@@ -4776,12 +4848,18 @@ let BattleItems = {
 	},
 	"quickclaw": {
 		id: "quickclaw",
-		onModifyPriorityPriority: -1,
-		onModifyPriority(priority, pokemon) {
+		onBeforeTurn(pokemon) {
 			if (this.randomChance(1, 5)) {
 				this.add('-activate', pokemon, 'item: Quick Claw');
-				return Math.round(priority) + 0.1;
+				pokemon.addVolatile('quickclaw');
 			}
+		},
+		effect: {
+			onModifyPriorityPriority: -1,
+			onModifyPriority(priority, pokemon) {
+				return Math.round(priority) + 0.1;
+			},
+			duration: 1,
 		},
 		name: "Quick Claw",
 		spritenum: 373,
@@ -4804,6 +4882,7 @@ let BattleItems = {
 				return this.chainModify(2);
 			}
 		},
+		itemUser: ["Ditto"],
 		num: 274,
 		gen: 4,
 		desc: "If held by a Ditto that hasn't Transformed, its Speed is doubled.",
@@ -4961,6 +5040,7 @@ let BattleItems = {
 			if (source.baseTemplate.baseSpecies === 'Groudon') return false;
 			return true;
 		},
+		itemUser: ["Groudon"],
 		num: 534,
 		gen: 6,
 		isNonstandard: "Past",
@@ -5069,6 +5149,7 @@ let BattleItems = {
 			return true;
 		},
 		forcedForme: "Silvally-Rock",
+		itemUser: ["Silvally-Rock"],
 		num: 908,
 		gen: 7,
 		desc: "Holder's Multi-Attack is Rock type.",
@@ -5097,7 +5178,7 @@ let BattleItems = {
 		onAfterDamageOrder: 2,
 		onAfterDamage(damage, target, source, move) {
 			if (source && source !== target && move && move.flags['contact']) {
-				this.damage(source.maxhp / 6, source, target);
+				this.damage(source.baseMaxhp / 6, source, target);
 			}
 		},
 		num: 540,
@@ -5113,7 +5194,7 @@ let BattleItems = {
 		},
 		onUpdate(pokemon) {
 			if (this.field.getPseudoWeather('trickroom') && pokemon.useItem()) {
-				this.boost({spe: -1});
+				this.boost({spe: -1}, pokemon, pokemon);
 			}
 		},
 		num: 1122,
@@ -5176,6 +5257,7 @@ let BattleItems = {
 		name: "Rowap Berry",
 		spritenum: 420,
 		isBerry: true,
+		isUnreleased: true,
 		naturalGift: {
 			basePower: 100,
 			type: "Dark",
@@ -5183,7 +5265,7 @@ let BattleItems = {
 		onAfterDamage(damage, target, source, move) {
 			if (source && source.hp && source !== target && move && move.category === 'Special') {
 				if (target.eatItem()) {
-					this.damage(source.maxhp / 8, source, target);
+					this.damage(source.baseMaxhp / 8, source, target);
 				}
 			}
 		},
@@ -5203,6 +5285,7 @@ let BattleItems = {
 			return true;
 		},
 		forcedForme: "Zamazenta-Crowned",
+		itemUser: ["Zamazenta-Crowned"],
 		num: 1104,
 		gen: 8,
 		desc: "If held by a Zamazenta, this item changes it to Crowned Forme.",
@@ -5218,6 +5301,7 @@ let BattleItems = {
 			return true;
 		},
 		forcedForme: "Zacian-Crowned",
+		itemUser: ["Zacian-Crowned"],
 		num: 1103,
 		gen: 8,
 		desc: "If held by a Zacian, this item changes it to Crowned Forme.",
@@ -5228,6 +5312,7 @@ let BattleItems = {
 		spritenum: 614,
 		megaStone: "Sableye-Mega",
 		megaEvolves: "Sableye",
+		itemUser: ["Sableye"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -5315,6 +5400,7 @@ let BattleItems = {
 		spritenum: 627,
 		megaStone: "Salamence-Mega",
 		megaEvolves: "Salamence",
+		itemUser: ["Salamence"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -5330,6 +5416,7 @@ let BattleItems = {
 		spritenum: 613,
 		megaStone: "Sceptile-Mega",
 		megaEvolves: "Sceptile",
+		itemUser: ["Sceptile"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -5345,6 +5432,7 @@ let BattleItems = {
 		spritenum: 605,
 		megaStone: "Scizor-Mega",
 		megaEvolves: "Scizor",
+		itemUser: ["Scizor"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -5408,6 +5496,7 @@ let BattleItems = {
 		spritenum: 619,
 		megaStone: "Sharpedo-Mega",
 		megaEvolves: "Sharpedo",
+		itemUser: ["Sharpedo"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -5473,6 +5562,7 @@ let BattleItems = {
 		},
 		onDrive: 'Electric',
 		forcedForme: "Genesect-Shock",
+		itemUser: ["Genesect-Shock"],
 		num: 117,
 		gen: 5,
 		desc: "Holder's Techno Blast is Electric type.",
@@ -5552,7 +5642,7 @@ let BattleItems = {
 			if (!this.runEvent('TryHeal', pokemon)) return false;
 		},
 		onEat(pokemon) {
-			this.heal(pokemon.maxhp / 4);
+			this.heal(pokemon.baseMaxhp / 4);
 		},
 		num: 158,
 		gen: 3,
@@ -5597,6 +5687,7 @@ let BattleItems = {
 		spritenum: 620,
 		megaStone: "Slowbro-Mega",
 		megaEvolves: "Slowbro",
+		itemUser: ["Slowbro"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -5624,7 +5715,7 @@ let BattleItems = {
 		onTakeItem: false,
 		zMove: "Pulverizing Pancake",
 		zMoveFrom: "Giga Impact",
-		zMoveUser: ["Snorlax"],
+		itemUser: ["Snorlax"],
 		num: 804,
 		gen: 7,
 		isNonstandard: "Past",
@@ -5670,7 +5761,7 @@ let BattleItems = {
 		onTakeItem: false,
 		zMove: "Searing Sunraze Smash",
 		zMoveFrom: "Sunsteel Strike",
-		zMoveUser: ["Solgaleo", "Necrozma-Dusk-Mane"],
+		itemUser: ["Solgaleo", "Necrozma-Dusk-Mane"],
 		num: 921,
 		gen: 7,
 		isNonstandard: "Past",
@@ -5689,6 +5780,7 @@ let BattleItems = {
 				return this.chainModify([0x1333, 0x1000]);
 			}
 		},
+		itemUser: ["Latios", "Latias"],
 		num: 225,
 		gen: 3,
 		desc: "If held by a Latias/Latios, its Dragon- and Psychic-type moves have 1.2x power.",
@@ -5829,6 +5921,7 @@ let BattleItems = {
 		spritenum: 621,
 		megaStone: "Steelix-Mega",
 		megaEvolves: "Steelix",
+		itemUser: ["Steelix"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -5869,6 +5962,7 @@ let BattleItems = {
 			return true;
 		},
 		forcedForme: "Silvally-Steel",
+		itemUser: ["Silvally-Steel"],
 		num: 911,
 		gen: 7,
 		desc: "Holder's Multi-Attack is Steel type.",
@@ -5899,6 +5993,7 @@ let BattleItems = {
 				return critRatio + 2;
 			}
 		},
+		itemUser: ["Farfetch'd"],
 		num: 259,
 		gen: 2,
 		isNonstandard: "Past",
@@ -5914,7 +6009,7 @@ let BattleItems = {
 		onResidualOrder: 26,
 		onResidualSubOrder: 2,
 		onResidual(pokemon) {
-			this.damage(pokemon.maxhp / 8);
+			this.damage(pokemon.baseMaxhp / 8);
 		},
 		onHit(target, source, move) {
 			if (source && source !== target && !source.item && move && move.flags['contact']) {
@@ -5979,6 +6074,7 @@ let BattleItems = {
 		spritenum: 612,
 		megaStone: "Swampert-Mega",
 		megaEvolves: "Swampert",
+		itemUser: ["Swampert"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -6043,7 +6139,7 @@ let BattleItems = {
 		onTakeItem: false,
 		zMove: "Guardian of Alola",
 		zMoveFrom: "Nature's Madness",
-		zMoveUser: ["Tapu Koko", "Tapu Lele", "Tapu Bulu", "Tapu Fini"],
+		itemUser: ["Tapu Koko", "Tapu Lele", "Tapu Bulu", "Tapu Fini"],
 		num: 801,
 		gen: 7,
 		isNonstandard: "Past",
@@ -6084,6 +6180,7 @@ let BattleItems = {
 				return this.chainModify(2);
 			}
 		},
+		itemUser: ["Marowak", "Cubone"],
 		num: 258,
 		gen: 2,
 		desc: "If held by a Cubone or a Marowak, its Attack is doubled.",
@@ -6187,6 +6284,7 @@ let BattleItems = {
 		spritenum: 607,
 		megaStone: "Tyranitar-Mega",
 		megaEvolves: "Tyranitar",
+		itemUser: ["Tyranitar"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -6212,7 +6310,7 @@ let BattleItems = {
 		onTakeItem: false,
 		zMove: "Light That Burns the Sky",
 		zMoveFrom: "Photon Geyser",
-		zMoveUser: ["Necrozma-Ultra"],
+		itemUser: ["Necrozma-Ultra"],
 		num: 923,
 		gen: 7,
 		isNonstandard: "Past",
@@ -6229,12 +6327,25 @@ let BattleItems = {
 		gen: 2,
 		desc: "Evolves Porygon into Porygon2 when traded.",
 	},
+	"utilityumbrella": {
+		id: "utilityumbrella",
+		name: "Utility Umbrella",
+		spritenum: 0,
+		fling: {
+			basePower: 60,
+		},
+		// Implemented in statuses.js, moves.js, and abilities.js
+		num: 1123,
+		gen: 8,
+		desc: "Blocks the holder from receiving any effects of Sunny Day/Rain Dance.",
+	},
 	"venusaurite": {
 		id: "venusaurite",
 		name: "Venusaurite",
 		spritenum: 608,
 		megaStone: "Venusaur-Mega",
 		megaEvolves: "Venusaur",
+		itemUser: ["Venusaur"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
@@ -6298,6 +6409,7 @@ let BattleItems = {
 			return true;
 		},
 		forcedForme: "Silvally-Water",
+		itemUser: ["Silvally-Water"],
 		num: 913,
 		gen: 7,
 		desc: "Holder's Multi-Attack is Water type.",
@@ -6880,6 +6992,7 @@ let BattleItems = {
 		spritenum: 577,
 		megaStone: "Crucibelle-Mega",
 		megaEvolves: "Crucibelle",
+		itemUser: ["Crucibelle"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseTemplate.baseSpecies) return false;
 			return true;
