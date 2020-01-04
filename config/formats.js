@@ -11,13 +11,13 @@ let Formats = [
 	},
 	{
 		name: "[🔥🔥🔥]Sam Battle Factory",
-		mod: 'gen7',
+		mod: 'gen8',
 		team: 'optional',
 		gameType: 'doubles',
 		challengeShow: true,
 		searchShow: true,
 		rated: false,
-		ruleset: ['Obtainable', 'Cancel Mod'],
+		ruleset: ['Obtainable', 'Cancel Mod', 'Dynamax Clause'],
 	}
 ];
 

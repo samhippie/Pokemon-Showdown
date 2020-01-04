@@ -1,0 +1,383 @@
+{
+	"aegislash": {
+		"flags": {},
+		"sets": [{
+			"species": "Aegislash",
+			"item": "Leftovers",
+			"ability": "Stance Change",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Quiet",
+			"moves": ["King's Shield", "Shadow Ball", "Sacred Sword", "Shadow Sneak"]
+		}]
+	},
+	"dragapult": {
+		"flags": {},
+		"sets": [{
+			"species": "Dragapult",
+			"item": "Clear Body",
+			"ability": "Stance Change",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Adamant",
+			"moves": ["Phantom Force", "Ally Switch", "Draco Meteor", "Dragon Darts"]
+		}]
+	},
+	"grimmsnarl": {
+		"flags": {},
+		"sets": [{
+			"species": "Grimmsnarl",
+			"item": "Figy Berry",
+			"ability": "Prankster",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Careful",
+			"moves": ["Fake Out", "Spirit Break", "Thunder Wave", "Light Screen"]
+		}]
+	},
+	"dracovish": {
+		"flags": {},
+		"sets": [{
+			"species": "Dracovish",
+			"item": "Choice Band",
+			"ability": "Strong Jaw",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Jolly",
+			"moves": ["Fishious Rend"]
+		}, {
+			"species": "Dracovish",
+			"item": "Choice Specs",
+			"ability": "Strong Jaw",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Jolly",
+			"moves": ["Draco Meteor", "Brine", "Hyper Beam", "Earth Power"]
+		}]
+	},
+	"togekiss": {
+		"flags": {},
+		"sets": [{
+			"species": "Togekiss",
+			"item": "Wiki Berry",
+			"ability": "Serene Grace",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Bold",
+			"moves": ["Follow Me", "Air Slash", "Dazzling Gleam", "Helping Hand"]
+		}, {
+			"species": "Togekiss",
+			"item": "Weakness Policy",
+			"ability": "Serene Grace",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Modest",
+			"moves": ["Heat Wave", "Air Slash", "Dazzling Gleam", "Aura Sphere"]
+		}]
+	},
+	"tyranitar": {
+		"flags": {},
+		"sets": [{
+			"species": "Tyranitar",
+			"item": "Weakness Policy",
+			"ability": "Sandstream",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Adamant",
+			"moves": ["Protect", "Dragon Dance", "Crunch", "Rock Slide"]
+		}]
+	},
+	"lapras": {
+		"flags": {},
+		"sets": [{
+			"species": "Lapras",
+			"item": "Leftovers",
+			"ability": "Water Absorb",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Calm",
+			"moves": ["Freeze-Dry", "Hydro Pump", "Perish Song", "Sheer Cold"]
+		}]
+	},
+	"toxtricity": {
+		"flags": {},
+		"sets": [{
+			"species": "Toxtricity",
+			"item": "Choice Scarf",
+			"ability": "Punk  Rock",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Timit",
+			"moves": ["Overdrive", "Sludge Bomb", "Boomburst", "Snarl"]
+		}]
+	},
+	"torkoal": {
+		"flags": {},
+		"sets": [{
+			"species": "torkoal",
+			"item": "Charcoal",
+			"ability": "Drought",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Quiet",
+			"moves": ["Eruption", "Flamethrower", "Solar Beam", "Protect"]
+		}]
+	},
+	"Indeedee-F": {
+		"flags": {},
+		"sets": [{
+			"name": "Indeedee-NB",
+			"species": "Indeedee-F",
+			"item": "Focus Sash",
+			"ability": "Psychic Surge",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Timid",
+			"moves": ["Follow Me", "Trick Room", "Psyshock", "Helping Hand"]
+		}]
+	},
+	"excadrill": {
+		"flags": {},
+		"sets": [{
+			"species": "Excadrill",
+			"item": "Focus Sash",
+			"ability": "Sand Rush",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Adamant",
+			"moves": ["Iron Head", "Rock Slide", "Earthquake", "Substitute"]
+		}, {
+			"species": "Excadrill",
+			"item": "Choice Band",
+			"ability": "Mold Breaker",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Jolly",
+			"moves": ["Steel Beam", "Rock Blast", "High Horsepower", "Earthquake"]
+		}]
+	},
+	"whimsicott": {
+		"flags": {},
+		"sets": [{
+			"species": "Whimsicott",
+			"item": "Focus Sash",
+			"ability": "Prankster",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Bold",
+			"moves": ["Tailwind", "Worry Seed", "Moonblast", "Sunny Day"]
+		}]
+	},
+	"sylveon": {
+		"flags": {},
+		"sets": [{
+			"species": "Sylveon",
+			"item": "Choice Specs",
+			"ability": "Pixilate",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Modest",
+			"moves": ["Hyper Beam"]
+		}, {
+			"species": "Sylveon",
+			"item": "Throat Spray",
+			"ability": "Pixilate",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Modest",
+			"moves": ["Hyper Voice", "Quick Attack", "Shadow Ball", "Protect"]
+		}]
+	},
+	"obstagoon": {
+		"flags": {},
+		"sets": [{
+			"species": "Obstagoon",
+			"item": "Flame Orb",
+			"ability": "Guts",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Adamant",
+			"moves": ["Knock Off", "Facade", "Protect", "Parting Shot"]
+		}]
+	},
+	"shuckle": {
+		"flags": {},
+		"sets": [{
+			"species": "Shuckle",
+			"item": "Focus Band",
+			"ability": "Sturdy",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Bold",
+			"moves": ["Infestation", "Power Split", "Power Trick", "Guard Split"]
+		}]
+	},
+	"weezing-galar": {
+		"flags": {},
+		"sets": [{
+			"species": "Weezing-Galar",
+			"item": "Black Sludge",
+			"ability": "Neutralizing Gas",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Bold",
+			"moves": ["Protect", "Will-O-Wisp", "Sludge Bomb", "Strange Steam"]
+		}]
+	},
+	"gengar": {
+		"flags": {},
+		"sets": [{
+			"species": "Gengar",
+			"item": "Focus Sash",
+			"ability": "Levitate",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Timid",
+			"moves": ["Protect", "Sludge Bomb", "Shadow Ball", "Thunderbolt"]
+		}, {
+			"species": "Gengar",
+			"item": "Focus Sash",
+			"ability": "Cursed Body",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Timid",
+			"moves": ["Protect", "Sludge Bomb", "Shadow Ball", "Flamethrower"]
+		}]
+	},
+	"salazzle": {
+		"flags": {},
+		"sets": [{
+			"species": "salazzle",
+			"shiny": true,
+			"item": "Focus Sash",
+			"ability": "Oblivious",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Timid",
+			"moves": ["Fake Out", "Flamethrower", "Sludge Bomb", "Protect"]
+		}]
+	},
+	"tapufini": {
+		"flags": {},
+		"sets": [{
+			"species": "Tapu Fini",
+			"item": "Choice Scarf",
+			"ability": "Misty Surge",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Modest",
+			"moves": ["Muddy Water", "Dazzling Gleam", "Grass Knot", "Ice Beam"]
+		}]
+	},
+	"tapukoko": {
+		"flags": {},
+		"sets": [{
+			"species": "Tapu Koko",
+			"item": "Life Orb",
+			"ability": "Electric Surge",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Naive",
+			"moves": ["Wild Charge", "Discharge", "Dazzling Gleam", "Protect"]
+		}]
+	},
+	"landorustherian": {
+		"flags": {},
+		"sets": [{
+			"species": "Landorus-Therian",
+			"item": "Choice Scarf",
+			"ability": "Intimidate",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Adamant",
+			"moves": ["Rock Slide"]
+		}, {
+			"species": "Landorus-Therian",
+			"item": "Choice Scarf",
+			"ability": "Intimidate",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "M",
+			"moves": ["Earth Power", "Focus Blast", "Extrasensory", "Grass Knot"]
+		}]
+	},
+	"heatran": {
+		"flags": {},
+		"sets": [{
+			"species": "Heatran",
+			"item": "Leftovers",
+			"ability": "Flash Fire",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Modest",
+			"moves": ["Heat Wave", "Substitute", "Earth Power", "Flash Cannon"]
+		}]
+	},
+	"talonflame": {
+		"flags": {},
+		"sets": [{
+			"species": "Talonflame",
+			"item": "Choice Band",
+			"ability": "Gale Wings",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Adamant",
+			"moves": ["Brave Bird", "Flare Blitz", "U-turn", "Tailwind"]
+		}]
+	},
+	"azumarill": {
+		"flags": {},
+		"sets": [{
+			"species": "Azumarill",
+			"item": "Sitrus Berry",
+			"ability": "Huge Power",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Adamant",
+			"moves": ["Belly Drum", "Aqua Jet", "Knock Off", "Protect"]
+		}]
+	},
+	"clefairy": {
+		"flags": {},
+		"sets": [{
+			"species": "Clefairy",
+			"item": "Eviolite",
+			"ability": "Friend Guard",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Bold",
+			"moves": ["Follow Me", "Helping Hand", "Icy Wind", "Minimize"]
+		}]
+	},
+	"incineroar": {
+		"flags": {},
+		"sets": [{
+			"species": "Incineroar",
+			"item": "Figy Berry",
+			"ability": "Blaze",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Adamant",
+			"moves": ["Fake Out", "Throat Chop", "Flare Blitz", "Protect"]
+		}]
+	},
+	"darmanitan-galar": {
+		"flags": {},
+		"sets": [{
+			"species": "Darmanitan-Galar",
+			"item": "Choice Scarf",
+			"ability": "Gorilla Tactics",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Jolly",
+			"moves": ["U-Turn", "Icicle Crash", "Earthquake", "Flare Blitz"]
+		}, {
+			"species": "Darmanitan-Galar",
+			"item": "Life Orb",
+			"ability": "Zen Mode",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Modest",
+			"moves": ["Blizzard", "Protect", "Psychic", "Flare Blitz"]
+		}]
+	},
+	"bronzong": {
+		"flags": {},
+		"sets": [{
+			"species": "Bronzong",
+			"item": "Leftovers",
+			"ability": "Levitate",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Relaxed",
+			"moves": ["Trick Room", "Body Press", "Ally Switch", "Hypnosis"]
+		}]
+	},
+	"rotom-mow": {
+		"flags": {},
+		"sets": [{
+			"species": "Rotom-Mow",
+			"item": "Sitrus Berry",
+			"ability": "Levitate",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Modest",
+			"moves": ["Will-O-Wisp", "Volt Switch", "Leaf Storm", "Trick"]
+		}]
+	},
+	"pelipper": {
+		"flags": {},
+		"sets": [{
+			"species": "Pelipper",
+			"item": "Focus Sash",
+			"ability": "Drizzle",
+			"evs": {"hp": 252, "atk": 4, "spa": 252},
+			"nature": "Modest",
+			"moves": ["Scald", "Hurricane", "Wide Guard", "Icy Wind"]
+		}]
+	}
+}

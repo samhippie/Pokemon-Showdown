@@ -21,16 +21,16 @@ import {TrainerPlayerAI} from '../tools/trainer-player-ai';
 const streams = getPlayerStreams(new BattleStream());
 
 const spec = {
-	formatid: "gen7randomdoublesbattle",
+	formatid: "gen8randomdoublesbattle",
 };
 const p1spec = {
 	name: "Bot 1",
-	team: Dex.packTeam(Dex.generateTeam('gen7randomdoublesbattle')),
+	team: Dex.packTeam(Dex.generateTeam('gen8randomdoublesbattle')),
 	dirtyCheater: false,
 };
 const p2spec = {
 	name: "Bot 2",
-	team: Dex.packTeam(Dex.generateTeam('gen7randomdoublesbattle')),
+	team: Dex.packTeam(Dex.generateTeam('gen8randomdoublesbattle')),
 	dirtyCheater: false,
 };
 

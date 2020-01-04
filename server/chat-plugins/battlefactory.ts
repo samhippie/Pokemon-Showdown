@@ -1,12 +1,13 @@
 
 import {BattleFactoryRoomBattle} from './battlefactory-room-battle';
 //normal ts-style `import` just sets bssSets to `undefined` for some reason
-const bssSets: Record<string, any> = require('../../data/mods/gen7/bss-factory-sets.json');
+//const bssSets: Record<string, any> = require('../../data/mods/gen7/bss-factory-sets.json');
+const bssSets: Record<string, any> = require('../../data/mods/battlefactory/sets.json');
 import {Dex} from '../../sim/dex';
 import { User } from '../users';
 
 class BattleFactory extends Rooms.RoomGame {
-	gameNumber: Number;
+	gameNumber: number;
 	gameid: ID;
 	player: User;
 	battleRoom: GameRoom | null;
@@ -15,6 +16,7 @@ class BattleFactory extends Rooms.RoomGame {
 	team: PokemonSet[];
 	oppTeam: PokemonSet[];
 	monToRemove: number | null;
+	level: number;
 
 	constructor(room: ChatRoom | GameRoom, user: User)  {
 
@@ -29,14 +31,15 @@ class BattleFactory extends Rooms.RoomGame {
 		this.team = [];
 		this.oppTeam = sampleMons(3, this.newMons.map(m => m.species));
 		this.monToRemove = null;
+		this.level = 1;
 	}
 
 	/**
 	 * For after a user has played a game and chose to play again
 	 */
 	continue() {
-		this.oppTeam = sampleMons(3, this.newMons.map(m => m.species).concat(this.team.map(m => m.species)));
-		console.log(this);
+		this.level += 1;
+		this.oppTeam = sampleMons(3, this.newMons.map(m => m.species).concat(this.team.map(m => m.species)), this.level);
 		this.displayPickToRemove();
 	}
 
@@ -46,7 +49,6 @@ class BattleFactory extends Rooms.RoomGame {
 		const roomid = Rooms.global.prepBattleRoom(format);
 		const p1 = Users.get(this.player);
 		this.newMons = this.oppTeam.slice();
-		console.log(this.team[0].moves);
 		const options: AnyObject = {
 			p1: p1,
 			format: format,
@@ -248,7 +250,7 @@ const sets: PokemonSet[] = [];
 /**
  *  If you ask for an impossible number of mons given the sets and blacklist, this is going to run forever
  */ 
-function sampleMons(n: number, speciesBlacklist: string[] = []) {
+function sampleMons(n: number, speciesBlacklist: string[] = [], level: number = 1) {
 	if (sets.length === 0) {
 		const mons = Object.keys(bssSets);
 		for (const mon of mons) {
@@ -257,7 +259,10 @@ function sampleMons(n: number, speciesBlacklist: string[] = []) {
 		for (const set of sets) {
 			//each move in json is actually an array of moves
 			//we could pick one randomly, but this is easier. It also avoids doing illegal things like having the same move multiple times on the same set
-			set.moves = set.moves.map(ms => ms[0]);
+			//set.moves = set.moves.map(ms => ms[0]);
+			if (set.level === undefined) {
+				set.level = 50;
+			}
 		}
 	}
 	const mons: PokemonSet[] = [];
@@ -271,6 +276,22 @@ function sampleMons(n: number, speciesBlacklist: string[] = []) {
 	if (Math.random() < 0.1) {
 		const i = Math.floor(Math.random() * mons.length);
 		mons[i].shiny = true;
+	}
+
+	for (const mon of mons) {
+		//each mon has a total of level ** 2 EVs
+		//spread over 2 or 3 stats
+		const totalEvs = Math.min(level ** 2, 510);
+		const stats: StatName[] = [ 'hp', 'atk', 'def', 'spa', 'spd', 'spe'];
+		const n = Math.random() < 0.5 ? 2 : 3;
+		const evs: StatsTable = { 'hp': 0, 'atk': 0, 'def': 0, 'spa': 0, 'spd': 0, 'spe': 0};
+		for (let i = 0; i < n; i++) {
+			const j = i + 1 + Math.floor(Math.random() * (6 - (i + 1)));
+			evs[stats[j]] = Math.min(Math.floor(totalEvs / n), 252);
+			stats[j] = stats[i];
+		}
+		mon.evs = evs;
+		console.log(evs);
 	}
 	return mons;
 }
