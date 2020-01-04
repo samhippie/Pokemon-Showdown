@@ -10,7 +10,10 @@ import {ObjectReadWriteStream} from '../../lib/streams';
 import {BattlePlayer, BattleStream} from '../battle-stream';
 import {PRNG, PRNGSeed} from '../prng';
 import {Dex} from '../dex';
-import { Pokemon } from '../pokemon';
+
+//TODO reorganize the AI special cases so that the case-specific code for writing to the ai state is next to the code reading the ai state
+//then we can define the cases in some separate file, and keep it out of the general ai code
+//but I'll do this when I add more special cases
 
 class CommandOption {
 	command: string;
@@ -50,7 +53,15 @@ class MoveOption extends CommandOption {
 	}
 
 	calcScore(battleState: BattleState) {
+		if (!battleState.aiState[this.pokemon.species]) {
+			battleState.aiState[this.pokemon.species] = {};
+		}
 		if (this.move.category == "Status") {
+			if (["Protect", "King's Sheild"].includes(this.move.name) && battleState.aiState[this.pokemon.species].usedProtect) {
+				this.score = 0;
+				console.log('avoiding a double protect')
+				return;
+			}
 			this.score = 1;
 			return;
 		}
@@ -171,11 +182,13 @@ class BattleState {
 	placeToIdTable: { [key in Place]?: string };
 	idToSpeciesTable: { [key in string]?: string };
 	side: Side;
+	aiState: AnyObject;
 
 	constructor(side: Side) {
 		this.side = side;
 		this.placeToIdTable = {};
 		this.idToSpeciesTable = {};
+		this.aiState = {};
 	}
 
 	parsePlace(s: string) : Place {
@@ -455,15 +468,10 @@ export class TrainerPlayerAI extends BattlePlayer {
 			this.choose(choices.join(`, `));
 		} else if (request.active) {
 			// move request
-			let [canMegaEvo, canUltraBurst, canZMove] = [true, true, true];
 			const pokemon = request.side.pokemon;
 			const chosen: number[] = [];
 			const choices = request.active.map((active: AnyObject, i: number) => {
 				if (pokemon[i].condition.endsWith(` fnt`)) return `pass`;
-
-				canMegaEvo = canMegaEvo && active.canMegaEvo;
-				canUltraBurst = canUltraBurst && active.canUltraBurst;
-				canZMove = canZMove && !!active.canZMove;
 
 				let canMove = [1, 2, 3, 4].slice(0, active.moves.length).filter(j => (
 					// not disabled
@@ -529,6 +537,7 @@ export class TrainerPlayerAI extends BattlePlayer {
 				if (option instanceof SwitchOption) {
 					chosen.push(option.targetIndex);
 				}
+				this.applyAiState(option);
 				return option.command;
 			});
 			this.choose(choices.join(`, `));
@@ -552,6 +561,16 @@ export class TrainerPlayerAI extends BattlePlayer {
 
 	protected chooseSwitch(switches: {slot: number, pokemon: AnyObject}[]): number {
 		return this.prng.sample(switches).slot;
+	}
+
+	applyAiState(option: CommandOption) {
+		let monState = this.battleState.aiState[option.pokemon.species];
+		if (!monState) {
+			monState = {};
+		}
+		monState.usedProtect = option instanceof MoveOption && option.move.flags.protect && ["Protect", "King's Sheild"].includes(option.move.volatileStatus || "");
+		console.log('mon state', monState);
+		this.battleState.aiState[option.pokemon.name] = monState;
 	}
 }
 
