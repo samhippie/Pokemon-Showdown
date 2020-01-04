@@ -99,7 +99,11 @@ export class RandomPlayerAI extends BattlePlayer {
 
 				// Filter out adjacentAlly moves if we have no allies left, unless they're our
 				// only possible move options.
+<<<<<<< HEAD
 				const hasAlly = pokemon[i ^ 1] && !pokemon[i ^ 1].condition.endsWith(` fnt`);
+=======
+				const hasAlly = pokemon.length > 1 && !pokemon[i ^ 1].condition.endsWith(` fnt`);
+>>>>>>> master
 				const filtered = canMove.filter(m => m.target !== `adjacentAlly` || hasAlly);
 				canMove = filtered.length ? filtered : canMove;
 

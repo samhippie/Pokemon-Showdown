@@ -1805,7 +1805,6 @@ let BattleFormatsData = {
 		inherit: true,
 		randomBattleMoves: ["spikes", "rapidspin", "icywind", "freezedry", "destinybond"],
 		randomDoubleBattleMoves: ["fakeout", "iceshard", "icepunch", "aerialace", "brickbreak", "protect"],
-		unreleasedHidden: false,
 		tier: "(PU)",
 		doublesTier: "(DUU)",
 	},
@@ -4649,12 +4648,10 @@ let BattleFormatsData = {
 		tier: "NFE",
 	},
 	floetteeternal: {
-		inherit: true,
 		randomBattleMoves: ["lightofruin", "psychic", "hiddenpowerfire", "hiddenpowerground", "moonblast"],
 		randomDoubleBattleMoves: ["lightofruin", "dazzlinggleam", "wish", "psychic", "aromatherapy", "protect", "calmmind"],
-		isNonstandard: null,
-		isUnreleased: true,
-		tier: "Unreleased",
+		isNonstandard: "Unobtainable",
+		tier: "Illegal",
 	},
 	florges: {
 		randomBattleMoves: ["calmmind", "moonblast", "synthesis", "aromatherapy", "wish", "toxic", "protect", "defog"],
@@ -5689,9 +5686,8 @@ let BattleFormatsData = {
 		doublesTier: "DUber",
 	},
 	magearnaoriginal: {
-		isNonstandard: null,
-		isUnreleased: true,
-		tier: "Unreleased",
+		isNonstandard: "Unobtainable",
+		tier: "Illegal",
 	},
 	marshadow: {
 		inherit: true,

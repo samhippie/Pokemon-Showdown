@@ -19,7 +19,7 @@ let BattleAliases = {
 	"bsd": "[Gen 8] Battle Stadium Doubles",
 	"bsdoubles": "[Gen 8] Battle Stadium Doubles",
 	"2v2": "[Gen 8] 2v2 Doubles",
-	"natdex": "[Gen 8] National Dex (beta)",
+	"natdex": "[Gen 8] National Dex",
 	"natdexag": "[Gen 8] National Dex AG",
 	"bh": "[Gen 8] Balanced Hackmons",
 	"mnm": "[Gen 8] Mix and Mega",
@@ -40,6 +40,9 @@ let BattleAliases = {
 	"gen7bsd": "[Gen 7] Battle Spot Doubles",
 	"gen6mono": "[Gen 6] Monotype",
 	"gen6ag": "[Gen 6] Anything Goes",
+	"petmod": "[Gen 7 Pet Mod] Clean Slate: Micro",
+	"cleanslatemicro": "[Gen 7 Pet Mod] Clean Slate: Micro",
+	"csm": "[Gen 7 Pet Mod] Clean Slate: Micro",
 
 	// mega evos
 	"fabio": "Ampharos-Mega",
@@ -148,6 +151,7 @@ let BattleAliases = {
 	"deos": "Deoxys-Speed",
 	"eiscuen": "Eiscue-Noice",
 	"eternalfloette": "Floette-Eternal",
+	"eternamax": "Eternatus-Eternamax",
 	"girao": "Giratina-Origin",
 	"giratinao": "Giratina-Origin",
 	"gourgeists": "Gourgeist-Small",

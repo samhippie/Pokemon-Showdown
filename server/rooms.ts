@@ -83,7 +83,7 @@ export abstract class BasicRoom {
 	isPrivate: boolean | 'hidden' | 'voice';
 	hideReplay: boolean;
 	isPersonal: boolean;
-	isHelp: string | boolean;
+	isHelp: boolean;
 	isOfficial: boolean;
 	reportJoins: boolean;
 	batchJoins: number;
@@ -1187,7 +1187,7 @@ export class BasicChatRoom extends BasicRoom {
 	}
 	pokeExpireTimer() {
 		if (this.expireTimer) clearTimeout(this.expireTimer);
-		if ((this.isPersonal && !this.isHelp) || (this.isHelp && this.isHelp !== 'open')) {
+		if (this.isPersonal || this.isHelp) {
 			this.expireTimer = setTimeout(() => this.expire(), TIMEOUT_INACTIVE_DEALLOCATE);
 		} else {
 			this.expireTimer = null;
@@ -1376,6 +1376,9 @@ export class BasicChatRoom extends BasicRoom {
 			this.battle = null;
 		}
 		this.active = false;
+
+		// Ensure there aren't any pending messages that could restart the expire timer
+		this.update();
 
 		// Clear any active timers for the room
 		if (this.muteTimer) {
